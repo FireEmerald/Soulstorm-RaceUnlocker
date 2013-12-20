@@ -1,8 +1,28 @@
-﻿Option Explicit On
+﻿
+'* Copyright (C) 2013 FireEmerald <https://github.com/FireEmerald>
+'* Copyright (C) 2008-2009 n0|Belial2003 <http://dow.4players.de/forum/index.php?page=User&userID=10286&s=4d85aca336eaa03924c488f8e7e6ed7cd7389caa>
+'*
+'* Project: Soulstorm - Race Unlocker
+'*
+'* Requires: .NET Framework 4 or higher, because of the RegistryKey.OpenBaseKey Method.
+'*
+'* This program is free software; you can redistribute it and/or modify it
+'* under the terms of the GNU General Public License as published by the
+'* Free Software Foundation; either version 2 of the License, or (at your
+'* option) any later version.
+'*
+'* This program is distributed in the hope that it will be useful, but WITHOUT
+'* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+'* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+'* more details.
+'*
+'* You should have received a copy of the GNU General Public License along
+'* with this program. If not, see <http://www.gnu.org/licenses/>.
+
+Option Explicit On
 Option Strict On
 
 Imports System.IO
-Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
 
 Public Enum OS
@@ -24,6 +44,9 @@ End Enum
 
 Public Class fmMain
 #Region "Declarations"
+    '// Link to the Stormblade patches.
+    Private Const _UpdateLink As String = "http://fire-emerald.com/custom/patches/ss_de_1.20_patch.zip"
+
     '// Used by Dawn of War - Classic
     Public Const _GameKeyPattern_5 As String = "^[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]-[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]-[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]-[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]-[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]$"
     '// Used by Winter Assault, Dark Crusade and Soulstorm | Example: 34h3-3r5t-34z6-347h-54g4
@@ -34,12 +57,14 @@ Public Class fmMain
     Private Sub fmMain_Load_Handler(sender As Object, e As EventArgs) Handles Me.Load
         '// Add a new line at the end of a existing logfile.
         Initialize_Log()
-        '// Close log StreamWriter if form is closing.
-        AddHandler Me.FormClosing, AddressOf Close_LogStream
         Log_Msg(PRÄFIX.INFO, "Application Startup - Initialized Logsystem")
 
         Log_Msg(PRÄFIX.INFO, "Application Startup - System informations - Windows: """ + [Enum].GetName(GetType(OS), GetOperatingSystem) + """")
         Log_Msg(PRÄFIX.INFO, "Application Startup - System informations - 64 Bit: """ + GetOS_ArchitectureAsString() + """")
+
+        Log_Msg(PRÄFIX.INFO, "Application Startup - System informations - All 32bit Registrykeys are redirected to 'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node'")
+        Log_Msg(PRÄFIX.INFO, "Application Startup - System informations - All 64bit Registrykeys stored in 'HKEY_LOCAL_MACHINE\SOFTWARE'")
+        Log_Msg(PRÄFIX.INFO, "Application Startup - System informations - All Dawn of War (Soulstorm or older) Applications are 32bit, so they are always at the 32bit directory.")
 
         Log_Msg(PRÄFIX.INFO, "Application Startup - Loading Backgroundcolors")
         '// Transparent for each Status Icon's Background (Images are PNG)
@@ -110,20 +135,47 @@ Public Class fmMain
 
             If Not GetOperatingSystem() = OS.NOT_SUPPORTED Then
                 If Not IsMatchSoulstormEXE(tbSoulstormInstallationDirectory.Text) Then '// NOT ENTFERNEN
+                    '// Start Unlock Process. First the registry unlock, then the *.exe unlock.
                     Dim _Unlocker As New Cls_RaceUnlocker(GetCompleteGameKey(GAME_ID.CLASSIC), _
                                                           GetCompleteGameKey(GAME_ID.WINTER_ASSAULT), _
                                                           GetCompleteGameKey(GAME_ID.DARK_CRUSADE), _
                                                           GetCompleteGameKey(GAME_ID.SOULSTORM), _
                                                           tbSoulstormInstallationDirectory.Text)
-                    _Unlocker.Unlock_Process_Start()
+                    _Unlocker.Unlock_Registry()
+
+                    If Not _Unlocker.GetRegistryUnlockStatus = "Done." Then
+                        Select Case MessageBox.Show(_Unlocker.GetRegistryUnlockStatus + vbCrLf + vbCrLf + _
+                                                    "Anyway, would you like to unlock the *.exe files?" + vbCrLf + _
+                                                    "(It's NOT recommended. The Unlock will NOT work!)" + vbCrLf + vbCrLf + _
+                                                    "Check the ""Race Unlocker Log.log"" on your Desktop for" + vbCrLf + _
+                                                    "more informations.", "Registry unlock error occured", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+
+                            Case DialogResult.Yes
+                                _Unlocker.Unlock_Exe()
+                                MessageBox.Show("Process completed. (NOT WORKING !)", "Soulstorm NOT unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        End Select
+                    Else
+                        _Unlocker.Unlock_Exe()
+                        MessageBox.Show("Process successfully completed.", "Soulstorm unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    End If
+
+                    '// Show the logfile if user want to see it.
+                    Select Case MessageBox.Show("Would you like to see the logfile?", "Process informations", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                        Case Windows.Forms.DialogResult.Yes
+                            Try
+                                Process.Start(My.Computer.FileSystem.SpecialDirectories.Desktop + "\" + GetLogfileName)
+                            Catch ex As Exception
+                                MessageBox.Show("The logfile couldn't be found!" + vbCrLf + vbCrLf + ex.Message, "Logfile not found", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            End Try
+                    End Select
                 End If
             Else
                 Log_Msg(PRÄFIX.EXCEPTION, "PreUnlock Process - Status - Operation system not supported")
-                MessageBox.Show("Your operation system is not supported yet!", "Wrong OS.", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Your operation system is not supported yet!", "Wrong operation system", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         Else
             Log_Msg(PRÄFIX.WARNING, "PreUnlock Process - Status - Wrong CD-Keys found")
-            MessageBox.Show("Please enter a only valid CD-Keys!", "Wrong gamekey syntax.", MessageBoxButtons.OK, MessageBoxIcon.Hand)
+            MessageBox.Show("Please enter a only valid CD-Keys!", "Serial Number syntax", MessageBoxButtons.OK, MessageBoxIcon.Hand)
         End If
 
     End Sub
@@ -153,14 +205,18 @@ Public Class fmMain
                                             "Patch(s) available! | Version: 1.4.0.0 | Current: " + _
                                             FileVersionInfo.GetVersionInfo(_SoulstormFolderPath).FileVersion.Replace(" ", "").Replace(",", "."), MessageBoxButtons.YesNo, MessageBoxIcon.Information)
                     Case Windows.Forms.DialogResult.Yes
-                        Process.Start("http://fire-emerald.com/custom/patches/ss_de_1.20_patch.zip")
+                        Try
+                            Process.Start(_UpdateLink)
+                        Catch ex As Exception
+                            MessageBox.Show("Can't download the patch." + vbCrLf + "Download it from: """ + _UpdateLink + """", "Connection error.", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        End Try
                 End Select
             End If
             Return True
         End If
         Log_Msg(PRÄFIX.WARNING, "Functions - IsMatchSoulstormEXE - No Soulstorm.exe found. | Directory: """ + _SoulstormFolderPath + "\Soulstorm.exe""")
-        Select Case MessageBox.Show("Please check the Installation Path. The 'Soulstorm.exe' couldn't found!" + vbCrLf + _
-                                    "Selected: """ + tbSoulstormInstallationDirectory.Text + """", "Soulstorm.exe not found.", MessageBoxButtons.OKCancel, MessageBoxIcon.Hand)
+        Select Case MessageBox.Show("Please check the installation path. The 'Soulstorm.exe' couldn't found!" + vbCrLf + _
+                                    "Selected: """ + tbSoulstormInstallationDirectory.Text + """", "Soulstorm.exe not found", MessageBoxButtons.OKCancel, MessageBoxIcon.Hand)
             Case Windows.Forms.DialogResult.OK
                 ChooseSoulstormPath()
         End Select

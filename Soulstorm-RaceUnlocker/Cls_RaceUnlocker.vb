@@ -1,4 +1,25 @@
-﻿Option Explicit On
+﻿
+'* Copyright (C) 2013 FireEmerald <https://github.com/FireEmerald>
+'* Copyright (C) 2008-2009 n0|Belial2003 <http://dow.4players.de/forum/index.php?page=User&userID=10286&s=4d85aca336eaa03924c488f8e7e6ed7cd7389caa>
+'*
+'* Project: Soulstorm - Race Unlocker
+'*
+'* Requires: .NET Framework 4 or higher, because of the RegistryKey.OpenBaseKey Method.
+'*
+'* This program is free software; you can redistribute it and/or modify it
+'* under the terms of the GNU General Public License as published by the
+'* Free Software Foundation; either version 2 of the License, or (at your
+'* option) any later version.
+'*
+'* This program is distributed in the hope that it will be useful, but WITHOUT
+'* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+'* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+'* more details.
+'*
+'* You should have received a copy of the GNU General Public License along
+'* with this program. If not, see <http://www.gnu.org/licenses/>.
+
+Option Explicit On
 Option Strict On
 
 Imports System.IO
@@ -9,6 +30,9 @@ Public Class Cls_RaceUnlocker
     '// Sub Directorys of the Game *.exe files.
     Private _SubDirClassic As String = "Unlocker\Classic and Winter Assault"
     Private _SubDirDarkCrusade As String = "Unlocker\Dark Crusade"
+
+    '// Status of the registry unlock process.
+    Private _RegistryUnlockStatus As String = ""
 
     '// Set by SubNew
     Private _ClassicGameKey, _
@@ -34,13 +58,23 @@ Public Class Cls_RaceUnlocker
         _SoulstormInstallationPath = SoulstormInstallationPath
     End Sub
 
-    Public Sub Unlock_Process_Start()
+#Region "Propertys"
+    Public ReadOnly Property GetRegistryUnlockStatus As String
+        Get
+            Return _RegistryUnlockStatus
+        End Get
+    End Property
+#End Region
+
+    ''' <summary>Edit the registry entrys of the games.</summary>
+    Public Sub Unlock_Registry()
         Log_Msg(PRÄFIX.INFO, "Unlock - Start - Classic: """ + _ClassicGameKey.Substring(0, _ClassicGameKey.LastIndexOf("-")) + "-XXXX"" | " + _
                                               "Winter Assault: """ + _WinterAssaultGameKey.Substring(0, _WinterAssaultGameKey.LastIndexOf("-")) + "-XXXX"" | " + _
                                               "Dark Crusade: """ + _DarkCrusadeGameKey.Substring(0, _DarkCrusadeGameKey.LastIndexOf("-")) + "-XXXX"" | " + _
                                               "Soulstorm: " + _SoulstormGameKey.Substring(0, _SoulstormGameKey.LastIndexOf("-")) + "-XXXX"" | " + _
                                               "Soulstorm InstallLocation: """ + _SoulstormInstallationPath + """")
 
+        _RegistryUnlockStatus = ""
         Dim _PermissionTestResult As String = RegistryPermissionTest()
         If _PermissionTestResult = "" Then
             '// Check if Classic/Winter Assault and Dark Crusade has a registry entry for the InstallLocation
@@ -82,10 +116,18 @@ Public Class Cls_RaceUnlocker
             CreateRegKey(_DBSoulstorm.RegSerialNumberKeyName, _SoulstormGameKey, _DBSoulstorm.RegGameSubDirectory)
 
             CreateRegKey(_DBSoulstorm.RegInstallLocKeyName, _SoulstormInstallationPath, _DBSoulstorm.RegGameSubDirectory)
+
+            _RegistryUnlockStatus = "Done."
         Else
-            Log_Msg(PRÄFIX.EXCEPTION, "Unlock - Permission Test - Failed: """ + _PermissionTestResult + """")
-            MessageBox.Show(_PermissionTestResult, "Registry error.", MessageBoxButtons.OK, MessageBoxIcon.Stop)
+            Log_Msg(PRÄFIX.EXCEPTION, "Unlock - Permission Test - Failed | Exception Msg: """ + _PermissionTestResult.Substring(_PermissionTestResult.LastIndexOf("%ex%")).Replace("%ex%", "") + """")
+            _RegistryUnlockStatus = _PermissionTestResult.Substring(0, _PermissionTestResult.IndexOf("%ex%"))
         End If
+    End Sub
+
+    ''' <summary>Dublicate the GraphicsConfig.exe of Soulstorm and rename them like the addons.</summary>
+    Public Sub Unlock_Exe()
+        '// Exe unlock Process
+        MsgBox("Unlocking....")
     End Sub
 
     ''' <summary>Check if a Game has a registry entry for the installation path. If yes, it will be added to the List Of X.</summary>

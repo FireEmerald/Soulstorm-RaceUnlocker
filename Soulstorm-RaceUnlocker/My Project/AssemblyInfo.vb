@@ -11,7 +11,7 @@ Imports System.Runtime.InteropServices
 ' Die Werte der Assemblyattribute überprüfen
 
 <Assembly: AssemblyTitle("Soulstorm - Race Unlocker")> 
-<Assembly: AssemblyDescription("")> 
+<Assembly: AssemblyDescription("Unlocks all races in Dawn of War Soulstorm.")> 
 <Assembly: AssemblyCompany("")> 
 <Assembly: AssemblyProduct("Soulstorm - Race Unlocker")> 
 <Assembly: AssemblyCopyright("Copyright © FireEmerald 2013")> 
@@ -33,7 +33,7 @@ Imports System.Runtime.InteropServices
 ' übernehmen, indem Sie "*" eingeben:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("0.1.0.0")> 
-<Assembly: AssemblyFileVersion("0.1.0.0")> 
+<Assembly: AssemblyVersion("0.2.0.0")> 
+<Assembly: AssemblyFileVersion("0.2.0.0")> 
 
 <Assembly: NeutralResourcesLanguageAttribute("en")> 
