@@ -78,7 +78,7 @@ Module Mod_Registry
         '// If the NewValue is a Serialnumber, mask it.
         Dim _LogNewValue As String = _NewValue
         If Regex.IsMatch(_NewValue, fmMain._GameKeyPattern_4) Or Regex.IsMatch(_NewValue, fmMain._GameKeyPattern_5) Then _LogNewValue = _NewValue.Substring(0, _NewValue.LastIndexOf("-")) + "-XXXX"
-        Log_Msg(PRÄFIX.INFO, "Registry - CreateRegKey - (Prepare) Create New  | KeyName: """ + _KeyName + """ | With Value: """ + _LogNewValue + """ | Sub Directory: (" + _BaseKey.ToString + "\" + _THQ_SubKey + ") """ + _SubDirectory + """")
+        Log_Msg(PRÄFIX.INFO, "Registry - CreateRegKey - (Prepare) Create New | KeyName: """ + _KeyName + """ | With Value: """ + _LogNewValue + """ | Sub Directory: (" + _BaseKey.ToString + "\" + _THQ_SubKey + ") """ + _SubDirectory + """")
 
         If _SubDirectory = "" Then Return RegCreateKey(_BaseKey, _THQ_SubKey, _KeyName, _NewValue)
         Return RegCreateKey(_BaseKey, _THQ_SubKey + "\" + _SubDirectory, _KeyName, _NewValue)
@@ -240,7 +240,7 @@ Module Mod_Registry
         Log_Msg(PRÄFIX.INFO, "Registry - RegistryPermissionTest - Delete TestKey directory: """ + _BaseKey.ToString + "\SOFTWARE\" + _TestKey_Directory + """")
         Try
             '// Delete the registered key and the directory.
-            _BaseKey.OpenSubKey("SOFTWAREX", True).DeleteSubKeyTree(_TestKey_Directory)
+            _BaseKey.OpenSubKey("SOFTWARE", True).DeleteSubKeyTree(_TestKey_Directory)
             '// Exception handling ...
         Catch ex As Security.SecurityException : Return "You don't have the required permissions to delete a registry key." + GetException(ex)
         Catch ex As UnauthorizedAccessException : Return "You don't have the necessary registry rights." + GetException(ex)
@@ -253,7 +253,7 @@ Module Mod_Registry
     End Function
 
     Private Function GetException(ex As Exception) As String
-        Return vbCrLf + vbCrLf + "Please login as administrator and start the Application with:" + vbCrLf + _
+        Return vbCrLf + vbCrLf + "Please login as administrator and start the application with:" + vbCrLf + _
                                  """Right click"" -> ""Start as administrator"" !" + _
                                  "%ex%" + ex.ToString
     End Function

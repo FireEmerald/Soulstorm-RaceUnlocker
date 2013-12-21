@@ -55,8 +55,8 @@ Module Mod_Log
 #End Region
     
     Public Sub Initialize_Log()
-        Dim _StrWrt As New StreamWriter(My.Computer.FileSystem.SpecialDirectories.Desktop + "\" + _LogfileName, True, Encoding.ASCII) With {.AutoFlush = True}
-        If File.Exists(My.Computer.FileSystem.SpecialDirectories.Desktop + "\" + _LogfileName) Then
+        Dim _StrWrt As New StreamWriter(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\" + _LogfileName, True, Encoding.ASCII) With {.AutoFlush = True}
+        If File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\" + _LogfileName) Then
             _StrWrt.WriteLine("")
         End If
         _StrWrt.Dispose()
@@ -65,7 +65,7 @@ Module Mod_Log
 
     ''' <summary>Adds a string to the log followed by a new line.</summary>
     Public Sub Log_Msg(_Präfix As PRÄFIX, _Message As String)
-        Dim _StrWrt As New StreamWriter(My.Computer.FileSystem.SpecialDirectories.Desktop + "\" + _LogfileName, True, Encoding.ASCII) With {.AutoFlush = True}
+        Dim _StrWrt As New StreamWriter(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\" + _LogfileName, True, Encoding.ASCII) With {.AutoFlush = True}
         _Log.AppendLine(GetSyntax(_Präfix) + _Message)
         _StrWrt.WriteLine(GetSyntax(_Präfix) + _Message)
         _StrWrt.Close()
@@ -74,7 +74,7 @@ Module Mod_Log
 
     ''' <summary>Adds a string to the log. NO new line!</summary>
     Public Sub Log_Msg_Clean(_Message As String)
-        Dim _StrWrt As New StreamWriter(My.Computer.FileSystem.SpecialDirectories.Desktop + "\" + _LogfileName, True, Encoding.ASCII) With {.AutoFlush = True}
+        Dim _StrWrt As New StreamWriter(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\" + _LogfileName, True, Encoding.ASCII) With {.AutoFlush = True}
         _Log.Append(_Message)
         _StrWrt.Write(_Message)
         _StrWrt.Close()

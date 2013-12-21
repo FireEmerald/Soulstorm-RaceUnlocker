@@ -46,6 +46,9 @@
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>40k_icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -164,6 +167,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Main_v2_2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GraphicsConfig.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="40k_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

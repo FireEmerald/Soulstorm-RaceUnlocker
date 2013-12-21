@@ -31,8 +31,9 @@ Public Class Cls_RaceUnlocker
     Private _SubDirClassic As String = "Unlocker\Classic and Winter Assault"
     Private _SubDirDarkCrusade As String = "Unlocker\Dark Crusade"
 
-    '// Status of the registry unlock process.
+    '// Status of the registry and exe unlock process.
     Private _RegistryUnlockStatus As String = ""
+    Private _ExeUnlockStatus As String = ""
 
     '// Set by SubNew
     Private _ClassicGameKey, _
@@ -64,8 +65,14 @@ Public Class Cls_RaceUnlocker
             Return _RegistryUnlockStatus
         End Get
     End Property
+    Public ReadOnly Property GetExeUnlockStatus As String
+        Get
+            Return _ExeUnlockStatus
+        End Get
+    End Property
 #End Region
 
+#Region "Registry part"
     ''' <summary>Edit the registry entrys of the games.</summary>
     Public Sub Unlock_Registry()
         Log_Msg(PRÄFIX.INFO, "Unlock - Start - Classic: """ + _ClassicGameKey.Substring(0, _ClassicGameKey.LastIndexOf("-")) + "-XXXX"" | " + _
@@ -117,17 +124,11 @@ Public Class Cls_RaceUnlocker
 
             CreateRegKey(_DBSoulstorm.RegInstallLocKeyName, _SoulstormInstallationPath, _DBSoulstorm.RegGameSubDirectory)
 
-            _RegistryUnlockStatus = "Done."
+            _RegistryUnlockStatus = "done"
         Else
             Log_Msg(PRÄFIX.EXCEPTION, "Unlock - Permission Test - Failed | Exception Msg: """ + _PermissionTestResult.Substring(_PermissionTestResult.LastIndexOf("%ex%")).Replace("%ex%", "") + """")
             _RegistryUnlockStatus = _PermissionTestResult.Substring(0, _PermissionTestResult.IndexOf("%ex%"))
         End If
-    End Sub
-
-    ''' <summary>Dublicate the GraphicsConfig.exe of Soulstorm and rename them like the addons.</summary>
-    Public Sub Unlock_Exe()
-        '// Exe unlock Process
-        MsgBox("Unlocking....")
     End Sub
 
     ''' <summary>Check if a Game has a registry entry for the installation path. If yes, it will be added to the List Of X.</summary>
@@ -146,127 +147,68 @@ Public Class Cls_RaceUnlocker
         End If
     End Sub
 
-    ''' <summary></summary>
-    ''' <param name="_Game"></param>
-    ''' <returns></returns>
+    ''' <summary>Returns True, if the registry path of the game is correct (*.exe exists).</summary>
     Private Function IsInstalled(_Game As GameData) As Boolean
         If File.Exists(GetRegInstallDirectory(_Game) + "\" + _Game.ExeName) Then Return True
         Return False
     End Function
+#End Region
 
-#Region "Old"
-    'Private ClassicKey As String, WAKey As String, DCKey As String, SSKey As String, userRoot As String
-    ''Set-Methods  START: used for saving entered Keys into private vars of this class
-    'Public Sub SetClassicKey(classicKey__1 As [String])
-    '    ClassicKey = classicKey__1
-    'End Sub
-    'Public Sub SetWAKey(waKey__1 As [String])
-    '    WAKey = waKey__1
-    'End Sub
-    'Public Sub SetDCKey(dcKey__1 As [String])
-    '    DCKey = dcKey__1
-    'End Sub
-    'Public Sub SetuserRoot(userroot__1 As [String])
-    '    userRoot = userroot__1
-    'End Sub
-    ''Set-Methods END
+#Region "Exe part"
+    ''' <summary>Dublicate the GraphicsConfig.exe of Soulstorm and rename them like the addons.</summary>
+    Public Sub Unlock_Exe()
+        _ExeUnlockStatus = "no_error"
+        '// Exe unlock Process
+        If Directory.Exists(_SoulstormInstallationPath) Then
+            Log_Msg(PRÄFIX.INFO, "Unlock - Exe Unlock - Directory Exists | Path: """ + _SoulstormInstallationPath + """")
+            '// ...\Dawn of War - Soulstorm\Unlocker
+            CreateDirectory(_SoulstormInstallationPath + "\Unlocker")
+            '// ...\Dawn of War - Soulstorm\Unlocker\Classic and Winter Assault
+            CreateDirectory(_SoulstormInstallationPath + "\" + _SubDirClassic)
+            CreateApplication(_SoulstormInstallationPath + "\" + _SubDirClassic, _DBClassic)
+            CreateApplication(_SoulstormInstallationPath + "\" + _SubDirClassic, _DBWinterAssault)
+            '// ...\Dawn of War - Soulstorm\Unlocker\Dark Crusade
+            CreateDirectory(_SoulstormInstallationPath + "\" + _SubDirDarkCrusade)
+            CreateApplication(_SoulstormInstallationPath + "\" + _SubDirDarkCrusade, _DBDarkCrusade)
+        Else
+            Log_Msg(PRÄFIX.EXCEPTION, "Unlock - DirectoryCheck - Not Found | Directory: """ + _SoulstormInstallationPath + """")
+            _ExeUnlockStatus = "The path to your Dawn of War Soulstorm directory does not exist."
+        End If
+    End Sub
 
-    'Private Sub Determine3264bitOS()
-    '    Dim SOFTWARE_KEY As String = "Software"
-    '    Dim COMPANY_NAME As String = "Wow6432Node"
-    '    Dim win3264 As RegistryKey = Registry.LocalMachine.OpenSubKey(SOFTWARE_KEY, False).OpenSubKey(COMPANY_NAME, False)
-    '    If win3264 IsNot Nothing Then
-    '        SetuserRoot("HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\THQ\")
-    '    Else
-    '        SetuserRoot("HKEY_LOCAL_MACHINE\SOFTWARE\THQ\")
-    '    End If
-    'End Sub
+    ''' <summary>Create a directory with the given path. If the directory already exists, True will be returned.</summary>
+    Private Function CreateDirectory(_Path As String) As Boolean
+        Try
+            Directory.CreateDirectory(_Path)
+        Catch ex As Exception
+            If IsNothing(_Path) Then _Path = "NOTHING"
 
-    ''Get-Methods START: used in RegWriter() to get desired values of vars and registry entries
-    'Private Function getClassicKey() As [String]
-    '    Return ClassicKey
-    'End Function
-    'Private Function getWAKey() As [String]
-    '    Return WAKey
-    'End Function
-    'Private Function getDCKey() As [String]
-    '    Return DCKey
-    'End Function
-    'Private Function getSSKey() As [String]
-    '    SSKey = DirectCast(Registry.GetValue(getuserRoot() & "Dawn of War - Soulstorm", "CDKEY", RegistryValueKind.[String]), String)
-    '    'TODO SSKey auslesen (32/64bit anpassung)
-    '    Return SSKey
-    'End Function
-    'Private Function getuserRoot() As [String]
-    '    Return userRoot
-    'End Function
-    'Private Function getInstallLocation() As [String]
-    '    Dim IL As [String] = DirectCast(Registry.GetValue(getuserRoot() & "Dawn of War - Soulstorm", "InstallLocation", RegistryValueKind.[String]), String)
+            Log_Msg(PRÄFIX.EXCEPTION, "Unlock - CreateDirectory - Exeption | Path: """ + _Path + """")
+            Log_Msg(PRÄFIX.EXCEPTION, "Unlock - CreateDirectory - Exeption | Message: """ + ex.ToString + """")
+            _ExeUnlockStatus = "A error occured while creating a new directory in your Dawn of War directory." + vbCrLf + vbCrLf + _
+                               "Check the logfile for more informations."
+            Return False
+        End Try
+        Log_Msg(PRÄFIX.INFO, "Unlock - CreateDirectory - Successful | Path: """ + _Path + """")
+        Return True
+    End Function
 
-    '    Return IL
-    'End Function
-    ''Get-Methods END
+    ''' <summary>Creates the game *.exe in the given path with the given game.</summary>
+    Private Function CreateApplication(_Path As String, _Game As GameData) As Boolean
+        Try
+            File.WriteAllBytes(_Path + "\" + _Game.ExeName, My.Resources.GraphicsConfig)
+        Catch ex As Exception
+            If IsNothing(_Path) Then _Path = "NOTHING"
+            If IsNothing(_Game) Then _Game = New GameData With {.ExeName = "NOTHING", .ID = GAME_ID.NOT_SET}
 
-    ''RegWriter START: writes Registry entries and also creates the fake exe files (should have been sepereated, bad style, i know, and now STFU
-    'Public Sub RegWriter()
-    '    Determine3264bitOS()
-
-    '    Dim DoW As String = userRoot & "Dawn of War"
-    '    'registry path to DoW+WA
-    '    Dim DoWDC As String = userRoot & "Dawn of War - Dark Crusade"
-    '    'registry path to DC
-    '    Dim DoWSS As String = userRoot & "Dawn of War - Soulstorm"
-    '    'registry path to SS
-    '    'Classic+WA Stuff START: Writes the keys of Classic and WA into the registry + creates the fake exe files
-    '    If getClassicKey() IsNot Nothing Then
-    '        'Writes following registry entries into Classic registry dir: Classic CD-Key, InstallLocation of SS
-    '        Registry.SetValue(DoW, "CDKEY", getClassicKey(), RegistryValueKind.[String])
-    '        Registry.SetValue(DoW, "InstallLocation", getInstallLocation() & "\", RegistryValueKind.[String])
-    '        'the Backslash at the end of the path here is a MUST, verification won't work otherwise => Reric make bug ;)
-    '        'Create fake Exe of DoW Classic START
-    '        If Not File.Exists(getInstallLocation() & "\W40k.exe") Then
-    '            'aint I a smart-ass? *g* fake exe like DCUnlock used, don't work, so this was the easiest solution i could come up with
-    '            File.Copy(getInstallLocation() & "\GraphicsConfig.exe", getInstallLocation() & "\W40k.exe")
-    '            'Create fake Exe of DoW Classic END
-
-    '        End If
-    '    End If
-
-
-    '    If getWAKey() IsNot Nothing Then
-    '        Registry.SetValue(DoW, "CDKEY_WXP", getWAKey(), RegistryValueKind.[String])
-
-    '        If Not File.Exists(getInstallLocation() & "\W40kWA.exe") Then
-    '            File.Copy(getInstallLocation() & "\GraphicsConfig.exe", getInstallLocation() & "\W40kWA.exe")
-    '        End If
-    '    End If
-    '    'Classic+WA Stuff END
-
-    '    'DC Stuff START: Writes the key of DC into the registry + creates the fake exe file
-    '    If getDCKey() IsNot Nothing Then
-    '        Registry.SetValue(DoWDC, "CDKEY", getDCKey(), RegistryValueKind.[String])
-    '        Registry.SetValue(DoWDC, "InstallLocation", getInstallLocation(), RegistryValueKind.[String])
-
-    '        If Not File.Exists(getInstallLocation() & "\DarkCrusade.exe") Then
-    '            File.Copy(getInstallLocation() & "\GraphicsConfig.exe", getInstallLocation() & "\DarkCrusade.exe")
-
-
-
-
-    '        End If
-    '    End If
-    '    'DC Stuff END
-
-    '    'SS Stuff START: Writes the keys of Classic, WA and DC into the registry of Soulstorm
-    '    If getSSKey() IsNot Nothing Then
-
-    '        Registry.SetValue(DoWSS, "W40KCDKEY", getClassicKey(), RegistryValueKind.[String])
-    '        Registry.SetValue(DoWSS, "WXPCDKEY", getWAKey(), RegistryValueKind.[String])
-
-    '        Registry.SetValue(DoWSS, "DXP2CDKEY", getDCKey(), RegistryValueKind.[String])
-    '    End If
-    '    'SS Stuff END
-    'End Sub
-    ''RegWriter END
+            Log_Msg(PRÄFIX.EXCEPTION, "Unlock - CreateApplication - Exception | Path/Game: """ + _Path + """\""" + _Game.ExeName + """")
+            Log_Msg(PRÄFIX.EXCEPTION, "Unlock - CreateApplication - Exception | Message: """ + ex.ToString + """")
+            _ExeUnlockStatus = "A error occured while copying the fake exe files in your Dawn of War Soulstorm directory." + vbCrLf + vbCrLf + _
+                               "Check the logfile for more informations."
+            Return False
+        End Try
+        Log_Msg(PRÄFIX.INFO, "Unlock - CreateApplication - Successful | Path: """ + _Path + """\""" + _Game.ExeName + """")
+        Return True
+    End Function
 #End Region
 End Class

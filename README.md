@@ -1,4 +1,4 @@
-# Soulstorm-RaceUnlocker
+﻿# Soulstorm-RaceUnlocker
 #### Blood for the Blood God !
 
 ## Introduction
@@ -19,7 +19,7 @@ So you just need Soulstorm installed but you need a valid serial number for each
 
 ## Install
 
-Just run the Soulstorm - Race Unlocker.exe in the \Soulstorm-RaceUnlocker\bin\Release folder.
+Just run the Soulstorm - Race Unlocker.exe in the \Soulstorm-RaceUnlocker\compiled folder.
 No installation required.
 
 

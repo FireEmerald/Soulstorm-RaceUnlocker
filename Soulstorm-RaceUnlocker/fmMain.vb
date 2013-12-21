@@ -36,10 +36,11 @@ Public Enum OS
 End Enum
 
 Public Enum GAME_ID
-    CLASSIC = 0
-    WINTER_ASSAULT = 1
-    DARK_CRUSADE = 2
-    SOULSTORM = 3
+    NOT_SET = 0
+    CLASSIC = 1
+    WINTER_ASSAULT = 2
+    DARK_CRUSADE = 3
+    SOULSTORM = 4
 End Enum
 
 Public Class fmMain
@@ -134,7 +135,7 @@ Public Class fmMain
            Regex.IsMatch(GetCompleteGameKey(GAME_ID.SOULSTORM), _GameKeyPattern_5) Then
 
             If Not GetOperatingSystem() = OS.NOT_SUPPORTED Then
-                If Not IsMatchSoulstormEXE(tbSoulstormInstallationDirectory.Text) Then '// NOT ENTFERNEN
+                If IsMatchSoulstormEXE(tbSoulstormInstallationDirectory.Text) Then '// Set a NOT for testing here.
                     '// Start Unlock Process. First the registry unlock, then the *.exe unlock.
                     Dim _Unlocker As New Cls_RaceUnlocker(GetCompleteGameKey(GAME_ID.CLASSIC), _
                                                           GetCompleteGameKey(GAME_ID.WINTER_ASSAULT), _
@@ -143,31 +144,42 @@ Public Class fmMain
                                                           tbSoulstormInstallationDirectory.Text)
                     _Unlocker.Unlock_Registry()
 
-                    If Not _Unlocker.GetRegistryUnlockStatus = "Done." Then
+                    If _Unlocker.GetRegistryUnlockStatus = "done" Then
+                        _Unlocker.Unlock_Exe()
+
+                        If _Unlocker.GetExeUnlockStatus = "no_error" Then
+                            MessageBox.Show("Process successfully completed.", "Soulstorm unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        Else
+                            MessageBox.Show(_Unlocker.GetExeUnlockStatus, "Soulstorm NOT unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        End If
+                    Else
+                        '// Error while unlocking the registry
                         Select Case MessageBox.Show(_Unlocker.GetRegistryUnlockStatus + vbCrLf + vbCrLf + _
                                                     "Anyway, would you like to unlock the *.exe files?" + vbCrLf + _
                                                     "(It's NOT recommended. The Unlock will NOT work!)" + vbCrLf + vbCrLf + _
                                                     "Check the ""Race Unlocker Log.log"" on your Desktop for" + vbCrLf + _
                                                     "more informations.", "Registry unlock error occured", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-
                             Case DialogResult.Yes
                                 _Unlocker.Unlock_Exe()
-                                MessageBox.Show("Process completed. (NOT WORKING !)", "Soulstorm NOT unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+                                If _Unlocker.GetExeUnlockStatus = "no_error" Then
+                                    MessageBox.Show("Process completed. (NOT WORKING !)", "Soulstorm NOT unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                Else
+                                    MessageBox.Show(_Unlocker.GetExeUnlockStatus, "Soulstorm NOT unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                End If
                         End Select
-                    Else
-                        _Unlocker.Unlock_Exe()
-                        MessageBox.Show("Process successfully completed.", "Soulstorm unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     End If
 
                     '// Show the logfile if user want to see it.
                     Select Case MessageBox.Show("Would you like to see the logfile?", "Process informations", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                         Case Windows.Forms.DialogResult.Yes
                             Try
-                                Process.Start(My.Computer.FileSystem.SpecialDirectories.Desktop + "\" + GetLogfileName)
+                                Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\" + GetLogfileName)
                             Catch ex As Exception
                                 MessageBox.Show("The logfile couldn't be found!" + vbCrLf + vbCrLf + ex.Message, "Logfile not found", MessageBoxButtons.OK, MessageBoxIcon.Error)
                             End Try
                     End Select
+                    '// Unlock process END
                 End If
             Else
                 Log_Msg(PRÄFIX.EXCEPTION, "PreUnlock Process - Status - Operation system not supported")
@@ -216,7 +228,7 @@ Public Class fmMain
         End If
         Log_Msg(PRÄFIX.WARNING, "Functions - IsMatchSoulstormEXE - No Soulstorm.exe found. | Directory: """ + _SoulstormFolderPath + "\Soulstorm.exe""")
         Select Case MessageBox.Show("Please check the installation path. The 'Soulstorm.exe' couldn't found!" + vbCrLf + _
-                                    "Selected: """ + tbSoulstormInstallationDirectory.Text + """", "Soulstorm.exe not found", MessageBoxButtons.OKCancel, MessageBoxIcon.Hand)
+                                    "Selected: """ + _SoulstormFolderPath + "\Soulstorm.exe""", "Soulstorm.exe not found", MessageBoxButtons.OKCancel, MessageBoxIcon.Hand)
             Case Windows.Forms.DialogResult.OK
                 ChooseSoulstormPath()
         End Select
@@ -230,7 +242,7 @@ Public Class fmMain
     ''' <param name="_Length">The Length in pixel which shouldn't be exceeded. </param>
     ''' <param name="_TextFont">Used font.</param>
     Private Function PathShorten(_Path As String, _Length As Integer, _TextFont As Font) As String
-        Log_Msg(PRÄFIX.INFO, "Functions - PathShorten - Cut | Path: """ + _Path + """ | Length: """ + _Length.ToString + """ | Font: """ + _TextFont.ToString)
+        Log_Msg(PRÄFIX.INFO, "Functions - PathShorten - Cut | Path: """ + _Path + """ | Length: """ + _Length.ToString + """ | Font: """ + _TextFont.ToString + """")
         Dim PathParts() As String = Split(_Path, "\")
         Dim PathBuild As New System.Text.StringBuilder(_Path.Length)
         Dim LastPart As String = PathParts(PathParts.Length - 1)
