@@ -53,4 +53,4 @@ Copyright (C) 2013 by [FireEmerald](https://github.com/FireEmerald)
 Copyright (C) 2008-2009 by [n0|Belial2003](http://dow.4players.de/forum/index.php?page=User&userID=10286&s=4d85aca336eaa03924c488f8e7e6ed7cd7389caa)
 
 
-License: [GPL 2.0](http://www.gnu.org/licenses/)
+License: [GPL 3.0](http://www.gnu.org/licenses/)
