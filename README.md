@@ -8,6 +8,10 @@ Soulstorm-RaceUnlocker is a *Tool* for Dawn of War - Soulstorm based in VB.net 2
 This Tool unlocks all races of every Add-On in Dawn of War - Soulstorm without installing them.
 So you just need Soulstorm installed but you need a valid serial number for each other expansion!
 
+## Preview image
+
+![preview](http://fire-emerald.com/custom/github/dow_race_unlocker.jpg)
+
 
 ## Requirements
 
@@ -19,13 +23,13 @@ So you just need Soulstorm installed but you need a valid serial number for each
 
 ## Install
 
-Just run the Soulstorm - Race Unlocker.exe in the \Soulstorm-RaceUnlocker\compiled folder.
+Just run the [Soulstorm - Race Unlocker.exe](https://github.com/FireEmerald/Soulstorm-RaceUnlocker/raw/master/compiled/Soulstorm%20-%20Race%20Unlocker.exe) in the \Soulstorm-RaceUnlocker\compiled folder.
 No installation required.
 
 
 ## How to use
 
-- Start the Soulstorm - Race Unlocker.exe
+- Start the [Soulstorm - Race Unlocker.exe](https://github.com/FireEmerald/Soulstorm-RaceUnlocker/raw/master/compiled/Soulstorm%20-%20Race%20Unlocker.exe)
 - Insert your serial numbers of each expansion and for Soulstorm
 - Select the installation location of Soulstorm
 - Click *Unlock*, done.
@@ -53,4 +57,4 @@ Copyright (C) 2013 by [FireEmerald](https://github.com/FireEmerald)
 Copyright (C) 2008-2009 by [n0|Belial2003](http://dow.4players.de/forum/index.php?page=User&userID=10286&s=4d85aca336eaa03924c488f8e7e6ed7cd7389caa)
 
 
-License: [GPL 3.0](http://www.gnu.org/licenses/)
+License: [GPL 3.0](https://github.com/FireEmerald/Soulstorm-RaceUnlocker/blob/master/doc/GPL_3_0.txt)
