@@ -312,7 +312,7 @@ Partial Class fmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackgroundImage = Global.Soulstorm_Race_Unlocker.My.Resources.Resources.Main_v2_2
+        Me.BackgroundImage = Global.Soulstorm_Race_Unlocker.My.Resources.Resources.Main_v2_3
         Me.ClientSize = New System.Drawing.Size(410, 480)
         Me.Controls.Add(Me.pbChoose)
         Me.Controls.Add(Me.pbSoulstormStatus)

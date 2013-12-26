@@ -490,4 +490,79 @@ Public Class fmMain
     End Sub
 #End Region
 
+#Region "KeyDown Clipboard Import System"
+    Private Sub ClassicClipboardImport(sender As Object, e As KeyEventArgs) Handles _
+        tbClassicKey_1.KeyDown, _
+        tbClassicKey_2.KeyDown, _
+        tbClassicKey_3.KeyDown, _
+        tbClassicKey_4.KeyDown
+
+        If e.Control AndAlso e.KeyCode = Keys.V Then ClipboardImportHandler(GAME_ID.CLASSIC)
+    End Sub
+    Private Sub WinterAssaultClipboardImport(sender As Object, e As KeyEventArgs) Handles _
+        tbWinterAssaultKey_1.KeyDown, _
+        tbWinterAssaultKey_2.KeyDown, _
+        tbWinterAssaultKey_3.KeyDown, _
+        tbWinterAssaultKey_4.KeyDown, _
+        tbWinterAssaultKey_5.KeyDown
+
+        If e.Control AndAlso e.KeyCode = Keys.V Then ClipboardImportHandler(GAME_ID.WINTER_ASSAULT)
+    End Sub
+    Private Sub DarkCrusadeClipboardImport(sender As Object, e As KeyEventArgs) Handles _
+        tbDarkCrusadeKey_1.KeyDown, _
+        tbDarkCrusadeKey_2.KeyDown, _
+        tbDarkCrusadeKey_3.KeyDown, _
+        tbDarkCrusadeKey_4.KeyDown, _
+        tbDarkCrusadeKey_5.KeyDown
+
+        If e.Control AndAlso e.KeyCode = Keys.V Then ClipboardImportHandler(GAME_ID.DARK_CRUSADE)
+    End Sub
+    Private Sub SoulstormClipboardImport(sender As Object, e As KeyEventArgs) Handles _
+        tbSoulstormKey_1.KeyDown, _
+        tbSoulstormKey_2.KeyDown, _
+        tbSoulstormKey_3.KeyDown, _
+        tbSoulstormKey_4.KeyDown, _
+        tbSoulstormKey_5.KeyDown
+
+        If e.Control AndAlso e.KeyCode = Keys.V Then ClipboardImportHandler(GAME_ID.SOULSTORM)
+    End Sub
+
+    Private Sub ClipboardImportHandler(_GameID As GAME_ID)
+        If Clipboard.ContainsText Then
+            If Regex.IsMatch(Clipboard.GetText, _GameKeyPattern_4) Then
+                Dim _KeyParts() As String = Regex.Split(Clipboard.GetText, "-")
+                tbClassicKey_1.Text = _KeyParts(0)
+                tbClassicKey_2.Text = _KeyParts(1)
+                tbClassicKey_3.Text = _KeyParts(2)
+                tbClassicKey_4.Text = _KeyParts(3)
+            ElseIf Regex.IsMatch(Clipboard.GetText, _GameKeyPattern_5) AndAlso Not _GameID = GAME_ID.CLASSIC Then
+                Dim _KeyParts() As String = Regex.Split(Clipboard.GetText, "-")
+                Select Case _GameID
+                    Case GAME_ID.WINTER_ASSAULT
+                        tbWinterAssaultKey_1.Text = _KeyParts(0)
+                        tbWinterAssaultKey_2.Text = _KeyParts(1)
+                        tbWinterAssaultKey_3.Text = _KeyParts(2)
+                        tbWinterAssaultKey_4.Text = _KeyParts(3)
+                        tbWinterAssaultKey_5.Text = _KeyParts(4)
+                    Case GAME_ID.DARK_CRUSADE
+                        tbDarkCrusadeKey_1.Text = _KeyParts(0)
+                        tbDarkCrusadeKey_2.Text = _KeyParts(1)
+                        tbDarkCrusadeKey_3.Text = _KeyParts(2)
+                        tbDarkCrusadeKey_4.Text = _KeyParts(3)
+                        tbDarkCrusadeKey_5.Text = _KeyParts(4)
+                    Case GAME_ID.SOULSTORM
+                        tbSoulstormKey_1.Text = _KeyParts(0)
+                        tbSoulstormKey_2.Text = _KeyParts(1)
+                        tbSoulstormKey_3.Text = _KeyParts(2)
+                        tbSoulstormKey_4.Text = _KeyParts(3)
+                        tbSoulstormKey_5.Text = _KeyParts(4)
+                End Select
+            Else
+                MessageBox.Show("Supported import syntax:" + vbCrLf + _
+                                "XXXX-XXXX-XXXX-XXXX (Classic)" + vbCrLf + _
+                                "XXXX-XXXX-XXXX-XXXX-XXXX (WA, DC, SS)", "Clipboard content", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
+        End If
+    End Sub
+#End Region
 End Class

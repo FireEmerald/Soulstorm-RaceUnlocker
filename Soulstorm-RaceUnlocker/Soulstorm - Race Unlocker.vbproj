@@ -166,13 +166,11 @@
     <None Include="Resources\choose_mouse_over.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Main_v2_2.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\GraphicsConfig.exe" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="40k_icon.ico" />
+    <None Include="Resources\Main_v2_3.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
