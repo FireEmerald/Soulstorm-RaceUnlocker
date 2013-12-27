@@ -22,6 +22,7 @@ Partial Class fmMain
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(fmMain))
         Me.tbClassicKey_1 = New System.Windows.Forms.TextBox()
         Me.tbClassicKey_2 = New System.Windows.Forms.TextBox()
         Me.tbClassicKey_3 = New System.Windows.Forms.TextBox()
@@ -343,8 +344,9 @@ Partial Class fmMain
         Me.Controls.Add(Me.pbClose)
         Me.Controls.Add(Me.tbClassicKey_1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "fmMain"
-        Me.Text = "Form1"
+        Me.Text = "Soulstorm - Race Unlocker"
         CType(Me.pbChoose, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.pbSoulstormStatus, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.pbDarkCrusadeStatus, System.ComponentModel.ISupportInitialize).EndInit()
