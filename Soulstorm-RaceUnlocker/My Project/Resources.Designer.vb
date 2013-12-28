@@ -153,9 +153,9 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property Main_v2_3() As System.Drawing.Bitmap
+        Friend ReadOnly Property Main_v2_4() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("Main_v2_3", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("Main_v2_4", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -216,6 +216,16 @@ Namespace My.Resources
         Friend ReadOnly Property unlock_mouse_over() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("unlock_mouse_over", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property version() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("version", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property

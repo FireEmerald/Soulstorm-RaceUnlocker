@@ -47,6 +47,8 @@ Public Class fmMain
 #Region "Declarations"
     '// Link to the Stormblade patches.
     Private Const _UpdateLink As String = "http://fire-emerald.com/custom/patches/ss_de_1.20_patch.zip"
+    '// Complete Soulstorm folder path
+    Private _SoulstormFolderPath As String = ""
 
     '// Used by Dawn of War - Classic
     Public Const _GameKeyPattern_5 As String = "^[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]-[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]-[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]-[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]-[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]$"
@@ -59,6 +61,8 @@ Public Class fmMain
         '// Add a new line at the end of a existing logfile.
         Initialize_Log()
         Log_Msg(PRÄFIX.INFO, "Application Startup - Initialized Logsystem")
+
+        Log_Msg(PRÄFIX.INFO, "Application Startup - RaceUnlocker - Version: """ + My.Application.Info.Version.ToString + """")
 
         Log_Msg(PRÄFIX.INFO, "Application Startup - System informations - Windows: """ + [Enum].GetName(GetType(OS), GetOperatingSystem) + """")
         Log_Msg(PRÄFIX.INFO, "Application Startup - System informations - 64 Bit: """ + GetOS_ArchitectureAsString() + """")
@@ -75,8 +79,14 @@ Public Class fmMain
         pbSoulstormStatus.BackColor = Color.Transparent
 
         Log_Msg(PRÄFIX.INFO, "Application Startup - Loading Soulstorm Installation Path")
-        '// Query the existing data from the registry
-        tbSoulstormInstallationDirectory.Text = GetRegInstallDirectory(_DBSoulstorm)
+        '// Load the existing data from the registry
+        Dim _RegSoulstormFolderPath As String = GetRegInstallDirectory(_DBSoulstorm)
+        tbSoulstormInstallationDirectory.Text = PathShorten(_RegSoulstormFolderPath, 340, tbSoulstormInstallationDirectory.Font)
+        '// Overrides the path set before by TextChanged event.
+        _SoulstormFolderPath = _RegSoulstormFolderPath
+
+        Log_Msg(PRÄFIX.INFO, "Application Startup - Soulstorm Installation Path - RegPath: """ + _SoulstormFolderPath + """ | RegPathResized: """ + tbSoulstormInstallationDirectory.Text + """")
+
         If Regex.IsMatch(GetRegGameKey(_DBClassic), _GameKeyPattern_4) Then
             Log_Msg(PRÄFIX.INFO, "Application Startup - Regex Game Key - Is Match | Affected Game: Classic")
             '// Classic
@@ -135,13 +145,13 @@ Public Class fmMain
            Regex.IsMatch(GetCompleteGameKey(GAME_ID.SOULSTORM), _GameKeyPattern_5) Then
 
             If Not GetOperatingSystem() = OS.NOT_SUPPORTED Then
-                If IsMatchSoulstormEXE(tbSoulstormInstallationDirectory.Text) Then '// Set a NOT for testing here.
+                If IsMatchSoulstormEXE(_SoulstormFolderPath) Then '// Set a NOT for testing here.
                     '// Start Unlock Process. First the registry unlock, then the *.exe unlock.
                     Dim _Unlocker As New Cls_RaceUnlocker(GetCompleteGameKey(GAME_ID.CLASSIC), _
                                                           GetCompleteGameKey(GAME_ID.WINTER_ASSAULT), _
                                                           GetCompleteGameKey(GAME_ID.DARK_CRUSADE), _
                                                           GetCompleteGameKey(GAME_ID.SOULSTORM), _
-                                                          tbSoulstormInstallationDirectory.Text)
+                                                          _SoulstormFolderPath)
                     _Unlocker.Unlock_Registry()
 
                     If _Unlocker.GetRegistryUnlockStatus = "done" Then
@@ -203,11 +213,13 @@ Public Class fmMain
     End Sub
 
     ''' <summary>Check if in the SoulstormFolder the Soulstorm.exe exists. If yes, check for updates for the Game.</summary>
-    Private Function IsMatchSoulstormEXE(_SoulstormFolderPath As String) As Boolean
-        If File.Exists(_SoulstormFolderPath + "\Soulstorm.exe") Then
-            If FileVersionInfo.GetVersionInfo(_SoulstormFolderPath + "\Soulstorm.exe").FileVersion = "1, 4, 0, 0" Then
+    Private Function IsMatchSoulstormEXE(_TempSoulstormFolderPath As String) As Boolean
+        If File.Exists(_TempSoulstormFolderPath + "\Soulstorm.exe") Then
+            If FileVersionInfo.GetVersionInfo(_TempSoulstormFolderPath + "\Soulstorm.exe").FileVersion = "1, 4, 0, 0" Then
                 Log_Msg(PRÄFIX.INFO, "Functions - IsMatchSoulstormEXE - Soulstorm is UpToDate")
-                tbSoulstormInstallationDirectory.Text = PathShorten(_SoulstormFolderPath, 340, tbSoulstormInstallationDirectory.Font)
+                tbSoulstormInstallationDirectory.Text = PathShorten(_TempSoulstormFolderPath, 340, tbSoulstormInstallationDirectory.Font)
+                '// Save the complete path. Overrides the path set before by TextChanged event.
+                _SoulstormFolderPath = _TempSoulstormFolderPath
             Else
                 Log_Msg(PRÄFIX.INFO, "Functions - IsMatchSoulstormEXE - Soulstorm Update available")
                 Select Case MessageBox.Show("You should update your Soulstorm installation. Download now?" + vbCrLf + vbCrLf + _
@@ -215,7 +227,7 @@ Public Class fmMain
                                             "SHA1: fb26609a168b489d3fcd5aba6581b2154d9872de" + vbCrLf + vbCrLf + _
                                             "Note: includes patch 1.1 and 1.2 in german.", _
                                             "Patch(s) available! | Version: 1.4.0.0 | Current: " + _
-                                            FileVersionInfo.GetVersionInfo(_SoulstormFolderPath).FileVersion.Replace(" ", "").Replace(",", "."), MessageBoxButtons.YesNo, MessageBoxIcon.Information)
+                                            FileVersionInfo.GetVersionInfo(_TempSoulstormFolderPath).FileVersion.Replace(" ", "").Replace(",", "."), MessageBoxButtons.YesNo, MessageBoxIcon.Information)
                     Case Windows.Forms.DialogResult.Yes
                         Try
                             Process.Start(_UpdateLink)
@@ -226,9 +238,9 @@ Public Class fmMain
             End If
             Return True
         End If
-        Log_Msg(PRÄFIX.WARNING, "Functions - IsMatchSoulstormEXE - No Soulstorm.exe found. | Directory: """ + _SoulstormFolderPath + "\Soulstorm.exe""")
+        Log_Msg(PRÄFIX.WARNING, "Functions - IsMatchSoulstormEXE - No Soulstorm.exe found. | Directory: """ + _TempSoulstormFolderPath + "\Soulstorm.exe""")
         Select Case MessageBox.Show("Please check the installation path. The 'Soulstorm.exe' couldn't found!" + vbCrLf + _
-                                    "Selected: """ + _SoulstormFolderPath + "\Soulstorm.exe""", "Soulstorm.exe not found", MessageBoxButtons.OKCancel, MessageBoxIcon.Hand)
+                                    "Selected: """ + _TempSoulstormFolderPath + "\Soulstorm.exe""", "Soulstorm.exe not found", MessageBoxButtons.OKCancel, MessageBoxIcon.Hand)
             Case Windows.Forms.DialogResult.OK
                 ChooseSoulstormPath()
         End Select
@@ -331,8 +343,9 @@ Public Class fmMain
     End Sub
     Private Sub Me_MouseUp(ByVal sender As Object, ByVal e As MouseEventArgs) Handles Me.MouseUp
         If Not _MovedWhileDown Then
-            Log_Msg(PRÄFIX.INFO, "Window Movement - Form MouseUp - Application Exit")
-            Application.Exit()
+            '// Short click (without moving the mouse) will close the form.
+            'Log_Msg(PRÄFIX.INFO, "Window Movement - Form MouseUp - Application Exit")
+            'Application.Exit()
         Else
             _MouseDown = False
             _MovedWhileDown = False
@@ -563,6 +576,12 @@ Public Class fmMain
                                 "XXXX-XXXX-XXXX-XXXX-XXXX (WA, DC, SS)", "Clipboard content", MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
         End If
+    End Sub
+#End Region
+
+#Region "TextChanged Event - SoulstormPath"
+    Private Sub tbSoulstormInstallationDirectory_TextChanged(sender As Object, e As EventArgs) Handles tbSoulstormInstallationDirectory.TextChanged
+        _SoulstormFolderPath = tbSoulstormInstallationDirectory.Text
     End Sub
 #End Region
 End Class

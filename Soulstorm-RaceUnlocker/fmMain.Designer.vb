@@ -51,6 +51,7 @@ Partial Class fmMain
         Me.pbUnlock = New System.Windows.Forms.PictureBox()
         Me.pbMinimize = New System.Windows.Forms.PictureBox()
         Me.pbClose = New System.Windows.Forms.PictureBox()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         CType(Me.pbChoose, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pbSoulstormStatus, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pbDarkCrusadeStatus, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -59,6 +60,7 @@ Partial Class fmMain
         CType(Me.pbUnlock, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pbMinimize, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pbClose, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'tbClassicKey_1
@@ -285,7 +287,7 @@ Partial Class fmMain
         'pbUnlock
         '
         Me.pbUnlock.Image = Global.Soulstorm_Race_Unlocker.My.Resources.Resources.unlock
-        Me.pbUnlock.Location = New System.Drawing.Point(137, 413)
+        Me.pbUnlock.Location = New System.Drawing.Point(135, 413)
         Me.pbUnlock.Name = "pbUnlock"
         Me.pbUnlock.Size = New System.Drawing.Size(132, 25)
         Me.pbUnlock.TabIndex = 5
@@ -309,12 +311,22 @@ Partial Class fmMain
         Me.pbClose.TabIndex = 3
         Me.pbClose.TabStop = False
         '
+        'PictureBox1
+        '
+        Me.PictureBox1.BackgroundImage = Global.Soulstorm_Race_Unlocker.My.Resources.Resources.version
+        Me.PictureBox1.Location = New System.Drawing.Point(6, 459)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(90, 13)
+        Me.PictureBox1.TabIndex = 33
+        Me.PictureBox1.TabStop = False
+        '
         'fmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackgroundImage = Global.Soulstorm_Race_Unlocker.My.Resources.Resources.Main_v2_3
+        Me.BackgroundImage = Global.Soulstorm_Race_Unlocker.My.Resources.Resources.Main_v2_4
         Me.ClientSize = New System.Drawing.Size(410, 480)
+        Me.Controls.Add(Me.PictureBox1)
         Me.Controls.Add(Me.pbChoose)
         Me.Controls.Add(Me.pbSoulstormStatus)
         Me.Controls.Add(Me.tbSoulstormKey_5)
@@ -355,6 +367,7 @@ Partial Class fmMain
         CType(Me.pbUnlock, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.pbMinimize, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.pbClose, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -387,5 +400,6 @@ Partial Class fmMain
     Friend WithEvents tbSoulstormKey_5 As System.Windows.Forms.TextBox
     Friend WithEvents pbSoulstormStatus As System.Windows.Forms.PictureBox
     Friend WithEvents pbChoose As System.Windows.Forms.PictureBox
+    Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
 
 End Class
