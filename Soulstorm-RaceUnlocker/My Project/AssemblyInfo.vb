@@ -14,7 +14,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("Unlocks all races in Dawn of War Soulstorm.")> 
 <Assembly: AssemblyCompany("")> 
 <Assembly: AssemblyProduct("Soulstorm - Race Unlocker")> 
-<Assembly: AssemblyCopyright("Copyright © FireEmerald 2013")> 
+<Assembly: AssemblyCopyright("Copyright © 2014 FireEmerald")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)> 

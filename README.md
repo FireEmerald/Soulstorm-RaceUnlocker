@@ -52,7 +52,7 @@ Fixes are submitted as pull request via Github or as code in a issue.
 
 ## Copyright
 
-Copyright (C) 2013 by [FireEmerald](https://github.com/FireEmerald)
+Copyright (C) 2013-2014 by [FireEmerald](https://github.com/FireEmerald)
 
 Copyright (C) 2008-2009 by [n0|Belial2003](http://dow.4players.de/forum/index.php?page=User&userID=10286&s=4d85aca336eaa03924c488f8e7e6ed7cd7389caa)
 
