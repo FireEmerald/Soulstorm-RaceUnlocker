@@ -10,7 +10,7 @@ So you just need Soulstorm installed but you need a valid serial number for each
 
 ## Preview image
 
-![preview](http://fire-emerald.com/custom/github/dow_race_unlocker.jpg)
+![preview](http://dow.4players.de/forum/index.php?page=Attachment&attachmentID=32485&h=1d785875c4ac8e2d647de15610aa8aed54232ec2)
 
 
 ## Requirements
@@ -23,13 +23,13 @@ So you just need Soulstorm installed but you need a valid serial number for each
 
 ## Install
 
-Just run the [Soulstorm - Race Unlocker.exe](https://github.com/FireEmerald/Soulstorm-RaceUnlocker/raw/master/release/Soulstorm%20-%20Race%20Unlocker.exe) in the \Soulstorm-RaceUnlocker\release folder.
+Just run the [Soulstorm - Race Unlocker.exe](http://goo.gl/KZhynS) in the \Soulstorm-RaceUnlocker\release folder.
 No installation required.
 
 
 ## How to use
 
-- Start the [Soulstorm - Race Unlocker.exe](https://github.com/FireEmerald/Soulstorm-RaceUnlocker/raw/master/release/Soulstorm%20-%20Race%20Unlocker.exe)
+- Start the [Soulstorm - Race Unlocker.exe](http://goo.gl/KZhynS)
 - Insert your serial numbers of each expansion and for Soulstorm
 - Select the installation location of Soulstorm
 - Click *Unlock*, done.
