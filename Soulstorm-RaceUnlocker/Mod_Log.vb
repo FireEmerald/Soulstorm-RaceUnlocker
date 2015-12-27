@@ -79,6 +79,6 @@ Module Mod_Log
 
     ''' <summary>Returns the header prefix for the logsystem.</summary>
     Private Function GetSyntax(_Prefix As PREFIX) As String
-        Return DateTime.Now.ToString("| yyyy.dd.MM | HH:mm ss | ") + [Enum].GetName(GetType(PREFIX), _Prefix) + " | "
+        Return DateTime.Now.ToString("| yyyy.dd.MM | HH:mm ss | ") & [Enum].GetName(GetType(PREFIX), _Prefix) & " | "
     End Function
 End Module

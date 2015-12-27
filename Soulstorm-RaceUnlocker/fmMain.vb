@@ -75,7 +75,7 @@ Public Class fmMain
         '// Overrides the path set before by TextChanged event.
         _SoulstormFolderPath = _RegSoulstormFolderPath
 
-        Log_Msg(PREFIX.INFO, "Application Startup - Soulstorm Installation Path - RegPath: """ + _SoulstormFolderPath + """ | RegPathResized: """ + tbSoulstormInstallationDirectory.Text + """")
+        Log_Msg(PREFIX.INFO, "Application Startup - Soulstorm Installation Path - RegPath: '" & _SoulstormFolderPath & "' | RegPathResized: '" & tbSoulstormInstallationDirectory.Text & "'")
 
         If Regex.IsMatch(GetRegGameKey(_DBClassic), _GameKeyPattern_4) Then
             Log_Msg(PREFIX.INFO, "Application Startup - Regex Game Key - Is Match | Affected Game: Classic")
@@ -120,7 +120,7 @@ Public Class fmMain
 
     ''' <summary>Split a String on each '-' to get all single parts of a whole game key.</summary>
     Private Function GetGameKeyParts(_FullGameKey As String) As List(Of String)
-        Log_Msg(PREFIX.INFO, "Functions - GetGameKeyParts - Split Key | Key: """ + _FullGameKey.Substring(0, _FullGameKey.LastIndexOf("-")) + "-XXXX""")
+        Log_Msg(PREFIX.INFO, "Functions - GetGameKeyParts - Split Key | Key: '" & _FullGameKey.Substring(0, _FullGameKey.LastIndexOf("-")) & "-XXXX'")
         Dim _GameKeyParts As New List(Of String)
         _GameKeyParts.AddRange(Regex.Split(_FullGameKey.ToUpper, "-"))
         Return _GameKeyParts
@@ -153,10 +153,10 @@ Public Class fmMain
                     End If
                 Else
                     '// Error while unlocking the registry
-                    Select Case MessageBox.Show(_Unlocker.GetRegistryUnlockStatus + vbCrLf + vbCrLf + _
-                                                "Anyway, would you like to unlock the *.exe files?" + vbCrLf + _
-                                                "(It's NOT recommended. The Unlock will NOT work!)" + vbCrLf + vbCrLf + _
-                                                "Check the ""Race Unlocker Log.log"" on your Desktop for" + vbCrLf + _
+                    Select Case MessageBox.Show(_Unlocker.GetRegistryUnlockStatus & vbCrLf & vbCrLf & _
+                                                "Anyway, would you like to unlock the *.exe files?" & vbCrLf & _
+                                                "(It's NOT recommended. The Unlock will NOT work!)" & vbCrLf & vbCrLf & _
+                                                "Check the 'Race Unlocker Log.log' on your Desktop for" & vbCrLf & _
                                                 "more informations.", "Registry unlock error occured", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                         Case DialogResult.Yes
                             _Unlocker.Unlock_Exe()
@@ -173,9 +173,9 @@ Public Class fmMain
                 Select Case MessageBox.Show("Would you like to see the logfile?", "Process informations", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                     Case Windows.Forms.DialogResult.Yes
                         Try
-                            Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\" + GetLogfileName)
+                            Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) & "\" & GetLogfileName)
                         Catch ex As Exception
-                            MessageBox.Show("The logfile couldn't be found!" + vbCrLf + vbCrLf + ex.Message, "Logfile not found", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            MessageBox.Show("The logfile couldn't be found!" & vbCrLf & vbCrLf & ex.Message, "Logfile not found", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         End Try
                 End Select
                 '// Unlock process END
@@ -200,33 +200,33 @@ Public Class fmMain
 
     ''' <summary>Check if in the SoulstormFolder the Soulstorm.exe exists. If yes, check for updates for the Game.</summary>
     Private Function IsMatchSoulstormEXE(_TempSoulstormFolderPath As String) As Boolean
-        If File.Exists(_TempSoulstormFolderPath + "\Soulstorm.exe") Then
-            If FileVersionInfo.GetVersionInfo(_TempSoulstormFolderPath + "\Soulstorm.exe").FileVersion = "1, 4, 0, 0" Then
+        If File.Exists(_TempSoulstormFolderPath & "\Soulstorm.exe") Then
+            If FileVersionInfo.GetVersionInfo(_TempSoulstormFolderPath & "\Soulstorm.exe").FileVersion = "1, 4, 0, 0" Then
                 Log_Msg(PREFIX.INFO, "Functions - IsMatchSoulstormEXE - Soulstorm is UpToDate")
                 tbSoulstormInstallationDirectory.Text = PathShorten(_TempSoulstormFolderPath, 340, tbSoulstormInstallationDirectory.Font)
                 '// Save the complete path. Overrides the path set before by TextChanged event.
                 _SoulstormFolderPath = _TempSoulstormFolderPath
             Else
                 Log_Msg(PREFIX.INFO, "Functions - IsMatchSoulstormEXE - Soulstorm Update available")
-                Select Case MessageBox.Show("You should update your Soulstorm installation. Download now?" + vbCrLf + vbCrLf + _
-                                            "Patch: SS_DE_1.20_Patch.zip | 111 MiB" + vbCrLf + _
-                                            "SHA1: fb26609a168b489d3fcd5aba6581b2154d9872de" + vbCrLf + vbCrLf + _
+                Select Case MessageBox.Show("You should update your Soulstorm installation. Download now?" & vbCrLf & vbCrLf & _
+                                            "Patch: SS_DE_1.20_Patch.zip | 111 MiB" & vbCrLf & _
+                                            "SHA1: fb26609a168b489d3fcd5aba6581b2154d9872de" & vbCrLf & vbCrLf & _
                                             "Note: includes patch 1.1 and 1.2 in german.", _
-                                            "Patch(s) available! | Version: 1.4.0.0 | Current: " + _
+                                            "Patch(s) available! | Version: 1.4.0.0 | Current: " & _
                                             FileVersionInfo.GetVersionInfo(_TempSoulstormFolderPath).FileVersion.Replace(" ", "").Replace(",", "."), MessageBoxButtons.YesNo, MessageBoxIcon.Information)
                     Case Windows.Forms.DialogResult.Yes
                         Try
                             Process.Start(_UpdateLink)
                         Catch ex As Exception
-                            MessageBox.Show("Can't download the patch." + vbCrLf + "Download it from: """ + _UpdateLink + """", "Connection error.", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                            MessageBox.Show("Can't download the patch." & vbCrLf & "Download it from: '" & _UpdateLink & "'", "Connection error.", MessageBoxButtons.OK, MessageBoxIcon.Information)
                         End Try
                 End Select
             End If
             Return True
         End If
-        Log_Msg(PREFIX.WARNING, "Functions - IsMatchSoulstormEXE - No Soulstorm.exe found. | Directory: """ + _TempSoulstormFolderPath + "\Soulstorm.exe""")
-        Select Case MessageBox.Show("Please check the installation path. The 'Soulstorm.exe' couldn't found!" + vbCrLf + _
-                                    "Selected: """ + _TempSoulstormFolderPath + "\Soulstorm.exe""", "Soulstorm.exe not found", MessageBoxButtons.OKCancel, MessageBoxIcon.Hand)
+        Log_Msg(PREFIX.WARNING, "Functions - IsMatchSoulstormEXE - No Soulstorm.exe found. | Directory: '" & _TempSoulstormFolderPath & "\Soulstorm.exe'")
+        Select Case MessageBox.Show("Please check the installation path. The 'Soulstorm.exe' couldn't found!" & vbCrLf & _
+                                    "Selected: '" & _TempSoulstormFolderPath & "\Soulstorm.exe'", "Soulstorm.exe not found", MessageBoxButtons.OKCancel, MessageBoxIcon.Hand)
             Case Windows.Forms.DialogResult.OK
                 ChooseSoulstormPath()
         End Select
@@ -240,7 +240,7 @@ Public Class fmMain
     ''' <param name="_Length">The Length in pixel which shouldn't be exceeded. </param>
     ''' <param name="_TextFont">Used font.</param>
     Private Function PathShorten(_Path As String, _Length As Integer, _TextFont As Font) As String
-        Log_Msg(PREFIX.INFO, "Functions - PathShorten - Cut | Path: """ + _Path + """ | Length: """ + _Length.ToString + """ | Font: """ + _TextFont.ToString + """")
+        Log_Msg(PREFIX.INFO, "Functions - PathShorten - Cut | Path: '" & _Path & "' | Length: '" & _Length.ToString & "' | Font: '" & _TextFont.ToString & "'")
         Dim PathParts() As String = Split(_Path, "\")
         Dim PathBuild As New System.Text.StringBuilder(_Path.Length)
         Dim LastPart As String = PathParts(PathParts.Length - 1)
@@ -264,12 +264,12 @@ Public Class fmMain
 
     ''' <summary>Merges all 4/5 TextBoxes of a Game Key together and add '-' between them.</summary>
     Private Function GetCompleteGameKey(_GameId As GAME_ID) As String
-        Log_Msg(PREFIX.INFO, "Functions - GetCompleteGameKey - Merge | GameID: """ + [Enum].GetName(GetType(GAME_ID), _GameId) + """")
+        Log_Msg(PREFIX.INFO, "Functions - GetCompleteGameKey - Merge | GameID: '" & [Enum].GetName(GetType(GAME_ID), _GameId) & "'")
         Select Case _GameId
-            Case GAME_ID.CLASSIC : Return tbClassicKey_1.Text + "-" + tbClassicKey_2.Text + "-" + tbClassicKey_3.Text + "-" + tbClassicKey_4.Text
-            Case GAME_ID.WINTER_ASSAULT : Return tbWinterAssaultKey_1.Text + "-" + tbWinterAssaultKey_2.Text + "-" + tbWinterAssaultKey_3.Text + "-" + tbWinterAssaultKey_4.Text + "-" + tbWinterAssaultKey_5.Text
-            Case GAME_ID.DARK_CRUSADE : Return tbDarkCrusadeKey_1.Text + "-" + tbDarkCrusadeKey_2.Text + "-" + tbDarkCrusadeKey_3.Text + "-" + tbDarkCrusadeKey_4.Text + "-" + tbDarkCrusadeKey_5.Text
-            Case GAME_ID.SOULSTORM : Return tbSoulstormKey_1.Text + "-" + tbSoulstormKey_2.Text + "-" + tbSoulstormKey_3.Text + "-" + tbSoulstormKey_4.Text + "-" + tbSoulstormKey_5.Text
+            Case GAME_ID.CLASSIC : Return tbClassicKey_1.Text & "-" & tbClassicKey_2.Text & "-" & tbClassicKey_3.Text & "-" & tbClassicKey_4.Text
+            Case GAME_ID.WINTER_ASSAULT : Return tbWinterAssaultKey_1.Text & "-" & tbWinterAssaultKey_2.Text & "-" & tbWinterAssaultKey_3.Text & "-" & tbWinterAssaultKey_4.Text & "-" & tbWinterAssaultKey_5.Text
+            Case GAME_ID.DARK_CRUSADE : Return tbDarkCrusadeKey_1.Text & "-" & tbDarkCrusadeKey_2.Text & "-" & tbDarkCrusadeKey_3.Text & "-" & tbDarkCrusadeKey_4.Text & "-" & tbDarkCrusadeKey_5.Text
+            Case GAME_ID.SOULSTORM : Return tbSoulstormKey_1.Text & "-" & tbSoulstormKey_2.Text & "-" & tbSoulstormKey_3.Text & "-" & tbSoulstormKey_4.Text & "-" & tbSoulstormKey_5.Text
             Case Else : Return ""
         End Select
     End Function
@@ -534,8 +534,8 @@ Public Class fmMain
                         tbSoulstormKey_5.Text = _KeyParts(4)
                 End Select
             Else
-                MessageBox.Show("Supported import syntax:" + vbCrLf + _
-                                "XXXX-XXXX-XXXX-XXXX (Classic)" + vbCrLf + _
+                MessageBox.Show("Supported import syntax:" & vbCrLf & _
+                                "XXXX-XXXX-XXXX-XXXX (Classic)" & vbCrLf & _
                                 "XXXX-XXXX-XXXX-XXXX-XXXX (WA, DC, SS)", "Clipboard content", MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
         End If

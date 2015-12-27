@@ -75,11 +75,11 @@ Public Class Cls_RaceUnlocker
 #Region "Registry part"
     ''' <summary>Edit the registry entrys of the games.</summary>
     Public Sub Unlock_Registry()
-        Log_Msg(PREFIX.INFO, "Unlock - Start - Classic: """ + _ClassicGameKey.Substring(0, _ClassicGameKey.LastIndexOf("-")) + "-XXXX"" | " + _
-                                              "Winter Assault: """ + _WinterAssaultGameKey.Substring(0, _WinterAssaultGameKey.LastIndexOf("-")) + "-XXXX"" | " + _
-                                              "Dark Crusade: """ + _DarkCrusadeGameKey.Substring(0, _DarkCrusadeGameKey.LastIndexOf("-")) + "-XXXX"" | " + _
-                                              "Soulstorm: " + _SoulstormGameKey.Substring(0, _SoulstormGameKey.LastIndexOf("-")) + "-XXXX"" | " + _
-                                              "Soulstorm InstallLocation: """ + _SoulstormInstallationPath + """")
+        Log_Msg(PREFIX.INFO, "Unlock - Start - Classic: '" & _ClassicGameKey.Substring(0, _ClassicGameKey.LastIndexOf("-")) & "-XXXX' | " & _
+                                              "Winter Assault: '" & _WinterAssaultGameKey.Substring(0, _WinterAssaultGameKey.LastIndexOf("-")) & "-XXXX' | " & _
+                                              "Dark Crusade: '" & _DarkCrusadeGameKey.Substring(0, _DarkCrusadeGameKey.LastIndexOf("-")) & "-XXXX' | " & _
+                                              "Soulstorm: '" & _SoulstormGameKey.Substring(0, _SoulstormGameKey.LastIndexOf("-")) & "-XXXX' | " & _
+                                              "Soulstorm InstallLocation: '" & _SoulstormInstallationPath & "'")
 
         _RegistryUnlockStatus = ""
         Dim _PermissionTestResult As String = RegistryPermissionTest()
@@ -98,27 +98,27 @@ Public Class Cls_RaceUnlocker
             CreateRegDirectory(_DBClassic.RegGameSubDirectory, "THQ")
             CreateRegDirectory(_DBDarkCrusade.RegGameSubDirectory, "THQ")
             CreateRegDirectory(_DBSoulstorm.RegGameSubDirectory, "THQ")
-            CreateRegDirectory("1.00.0000", "THQ\" + _DBSoulstorm.RegGameSubDirectory)
+            CreateRegDirectory("1.00.0000", "THQ\" & _DBSoulstorm.RegGameSubDirectory)
 
             '// Insert the keys / installation directorys
             '// Classic & Winter Assault | Key, Key, InstallDir
             CreateRegKey(_DBClassic.RegSerialNumberKeyName, _ClassicGameKey, _DBClassic.RegGameSubDirectory)
             CreateRegKey(_DBWinterAssault.RegSerialNumberKeyName, _WinterAssaultGameKey, _DBClassic.RegGameSubDirectory)
 
-            CreateRegKey(_DBClassic.RegInstallLocKeyName, _SoulstormInstallationPath + "\" + _SubDirClassic + "\", _DBClassic.RegGameSubDirectory)
+            CreateRegKey(_DBClassic.RegInstallLocKeyName, _SoulstormInstallationPath & "\" & _SubDirClassic & "\", _DBClassic.RegGameSubDirectory)
 
             '// Dark Crusade | Key, InstallDir
             CreateRegKey(_DBDarkCrusade.RegSerialNumberKeyName, _DarkCrusadeGameKey, _DBDarkCrusade.RegGameSubDirectory)
 
-            CreateRegKey(_DBDarkCrusade.RegInstallLocKeyName, _SoulstormInstallationPath + "\" + _SubDirDarkCrusade, _DBDarkCrusade.RegGameSubDirectory)
+            CreateRegKey(_DBDarkCrusade.RegInstallLocKeyName, _SoulstormInstallationPath & "\" & _SubDirDarkCrusade, _DBDarkCrusade.RegGameSubDirectory)
 
             '// Soulstorm with all AddOns | Key, Key, Key, Key, InstallDir
             '// W40KCDKEY = Classic
-            CreateRegKey("W40K" + _DBClassic.RegSerialNumberKeyName, _ClassicGameKey, _DBSoulstorm.RegGameSubDirectory)
+            CreateRegKey("W40K" & _DBClassic.RegSerialNumberKeyName, _ClassicGameKey, _DBSoulstorm.RegGameSubDirectory)
             '// WXPCDKEY = Winter Assault
-            CreateRegKey(_DBWinterAssault.RegSerialNumberKeyName.Remove(0, 6) + "CDKEY", _WinterAssaultGameKey, _DBSoulstorm.RegGameSubDirectory)
+            CreateRegKey(_DBWinterAssault.RegSerialNumberKeyName.Remove(0, 6) & "CDKEY", _WinterAssaultGameKey, _DBSoulstorm.RegGameSubDirectory)
             '// DXP2CDKEY = Dark Crusade
-            CreateRegKey("DXP2" + _DBDarkCrusade.RegSerialNumberKeyName, _DarkCrusadeGameKey, _DBSoulstorm.RegGameSubDirectory)
+            CreateRegKey("DXP2" & _DBDarkCrusade.RegSerialNumberKeyName, _DarkCrusadeGameKey, _DBSoulstorm.RegGameSubDirectory)
             '// CDKEY = Soulstorm
             CreateRegKey(_DBSoulstorm.RegSerialNumberKeyName, _SoulstormGameKey, _DBSoulstorm.RegGameSubDirectory)
 
@@ -126,7 +126,7 @@ Public Class Cls_RaceUnlocker
 
             _RegistryUnlockStatus = "done"
         Else
-            Log_Msg(PREFIX.EXCEPTION, "Unlock - Permission Test - Failed | Exception Msg: """ + _PermissionTestResult.Substring(_PermissionTestResult.LastIndexOf("%ex%")).Replace("%ex%", "") + """")
+            Log_Msg(PREFIX.EXCEPTION, "Unlock - Permission Test - Failed | Exception Msg: '" & _PermissionTestResult.Substring(_PermissionTestResult.LastIndexOf("%ex%")).Replace("%ex%", "") & "'")
             _RegistryUnlockStatus = _PermissionTestResult.Substring(0, _PermissionTestResult.IndexOf("%ex%"))
         End If
     End Sub
@@ -149,7 +149,7 @@ Public Class Cls_RaceUnlocker
 
     ''' <summary>Returns True, if the registry path of the game is correct (*.exe exists).</summary>
     Private Function IsInstalled(_Game As GameData) As Boolean
-        If File.Exists(GetRegInstallDirectory(_Game) + "\" + _Game.ExeName) Then Return True
+        If File.Exists(GetRegInstallDirectory(_Game) & "\" & _Game.ExeName) Then Return True
         Return False
     End Function
 #End Region
@@ -160,18 +160,18 @@ Public Class Cls_RaceUnlocker
         _ExeUnlockStatus = "no_error"
         '// Exe unlock Process
         If Directory.Exists(_SoulstormInstallationPath) Then
-            Log_Msg(PREFIX.INFO, "Unlock - Exe Unlock - Directory Exists | Path: """ + _SoulstormInstallationPath + """")
+            Log_Msg(PREFIX.INFO, "Unlock - Exe Unlock - Directory Exists | Path: '" & _SoulstormInstallationPath & "'")
             '// ...\Dawn of War - Soulstorm\Unlocker
-            CreateDirectory(_SoulstormInstallationPath + "\Unlocker")
+            CreateDirectory(_SoulstormInstallationPath & "\Unlocker")
             '// ...\Dawn of War - Soulstorm\Unlocker\Classic and Winter Assault
-            CreateDirectory(_SoulstormInstallationPath + "\" + _SubDirClassic)
-            CreateApplication(_SoulstormInstallationPath + "\" + _SubDirClassic, _DBClassic)
-            CreateApplication(_SoulstormInstallationPath + "\" + _SubDirClassic, _DBWinterAssault)
+            CreateDirectory(_SoulstormInstallationPath & "\" & _SubDirClassic)
+            CreateApplication(_SoulstormInstallationPath & "\" & _SubDirClassic, _DBClassic)
+            CreateApplication(_SoulstormInstallationPath & "\" & _SubDirClassic, _DBWinterAssault)
             '// ...\Dawn of War - Soulstorm\Unlocker\Dark Crusade
-            CreateDirectory(_SoulstormInstallationPath + "\" + _SubDirDarkCrusade)
-            CreateApplication(_SoulstormInstallationPath + "\" + _SubDirDarkCrusade, _DBDarkCrusade)
+            CreateDirectory(_SoulstormInstallationPath & "\" & _SubDirDarkCrusade)
+            CreateApplication(_SoulstormInstallationPath & "\" & _SubDirDarkCrusade, _DBDarkCrusade)
         Else
-            Log_Msg(PREFIX.EXCEPTION, "Unlock - DirectoryCheck - Not Found | Directory: """ + _SoulstormInstallationPath + """")
+            Log_Msg(PREFIX.EXCEPTION, "Unlock - DirectoryCheck - Not Found | Directory: '" & _SoulstormInstallationPath & "'")
             _ExeUnlockStatus = "The path to your Dawn of War Soulstorm directory does not exist."
         End If
     End Sub
@@ -183,31 +183,31 @@ Public Class Cls_RaceUnlocker
         Catch ex As Exception
             If IsNothing(_Path) Then _Path = "NOTHING"
 
-            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateDirectory - Exeption | Path: """ + _Path + """")
-            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateDirectory - Exeption | Message: """ + ex.ToString + """")
-            _ExeUnlockStatus = "A error occured while creating a new directory in your Dawn of War directory." + vbCrLf + vbCrLf + _
+            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateDirectory - Exeption | Path: '" & _Path & "'")
+            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateDirectory - Exeption | Message: '" & ex.ToString & "'")
+            _ExeUnlockStatus = "A error occured while creating a new directory in your Dawn of War directory." & vbCrLf & vbCrLf & _
                                "Check the logfile for more informations."
             Return False
         End Try
-        Log_Msg(PREFIX.INFO, "Unlock - CreateDirectory - Successful | Path: """ + _Path + """")
+        Log_Msg(PREFIX.INFO, "Unlock - CreateDirectory - Successful | Path: '" & _Path & "'")
         Return True
     End Function
 
     ''' <summary>Creates the game *.exe in the given path with the given game.</summary>
     Private Function CreateApplication(_Path As String, _Game As GameData) As Boolean
         Try
-            File.WriteAllBytes(_Path + "\" + _Game.ExeName, My.Resources.GraphicsConfig)
+            File.WriteAllBytes(_Path & "\" & _Game.ExeName, My.Resources.GraphicsConfig)
         Catch ex As Exception
             If IsNothing(_Path) Then _Path = "NOTHING"
             If IsNothing(_Game) Then _Game = New GameData With {.ExeName = "NOTHING", .ID = GAME_ID.NOT_SET}
 
-            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateApplication - Exception | Path/Game: """ + _Path + """\""" + _Game.ExeName + """")
-            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateApplication - Exception | Message: """ + ex.ToString + """")
-            _ExeUnlockStatus = "A error occured while copying the fake exe files in your Dawn of War Soulstorm directory." + vbCrLf + vbCrLf + _
+            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateApplication - Exception | Path/Game: '" & _Path & "'\'" & _Game.ExeName & "'")
+            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateApplication - Exception | Message: '" & ex.ToString & "'")
+            _ExeUnlockStatus = "A error occured while copying the fake exe files in your Dawn of War Soulstorm directory." & vbCrLf & vbCrLf & _
                                "Check the logfile for more informations."
             Return False
         End Try
-        Log_Msg(PREFIX.INFO, "Unlock - CreateApplication - Successful | Path: """ + _Path + """\""" + _Game.ExeName + """")
+        Log_Msg(PREFIX.INFO, "Unlock - CreateApplication - Successful | Path: '" & _Path & "'\'" & _Game.ExeName & "'")
         Return True
     End Function
 #End Region
