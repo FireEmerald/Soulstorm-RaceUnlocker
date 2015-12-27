@@ -24,6 +24,7 @@ Option Strict On
 
 Imports System.IO
 Imports System.Text.RegularExpressions
+Imports System.Security.Cryptography
 
 Public Enum GAME_ID
     NOT_SET = 0
@@ -36,19 +37,29 @@ End Enum
 Public Class fmMain
 #Region "Declarations"
     '// Link to the Soulstorm patches.
-    Private Const _UpdateLink As String = "http://www.patches-scrolls.de/patch/4741/7/"
+    Private Const SOULSTORM_PATCH_LINK As String = "http://www.patches-scrolls.de/patch/4741/7/"
     '// Complete Soulstorm folder path
     Private _SoulstormFolderPath As String = ""
 
-    '// Used by Dawn of War - Classic
+    Private Structure SoulstormExeHash
+        Dim Hash, VersionString As String
+    End Structure
+
+    Private ReadOnly _Soulstorm_Exe_1_0 As New SoulstormExeHash With {.Hash = "A0714DAEC81095D4AC4B2CB4BF11D2CFAC32E261", .VersionString = "DOW-Engine 1.0.9409, Dawn of War: Soulstorm 1.0, Build 9409"}
+    Private ReadOnly _Soulstorm_Exe_1_1 As New SoulstormExeHash With {.Hash = "075BB04276A5C5A285BA25FCD38B25F00BA3477B", .VersionString = "DOW-Engine 1.1.100, Dawn of War: Soulstorm 1.0, Build 100"}
+    Private ReadOnly _Soulstorm_Exe_1_2 As New SoulstormExeHash With {.Hash = "36B6D805E452541764873ED6D1EAD07A7C025C64", .VersionString = "DOW-Engine 1.2.120, Dawn of War: Soulstorm 1.0, Build 120"}
+    Private ReadOnly _KnownSoulstormHashes As New List(Of SoulstormExeHash)({_Soulstorm_Exe_1_0, _Soulstorm_Exe_1_1, _Soulstorm_Exe_1_2})
+
+    '// RegEx Patterns:
+    '// - used for Dawn of War - Classic:
     Public Const _GameKeyPattern_5 As String = "^[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]-[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]-[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]-[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]-[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]$"
-    '// Used by Winter Assault, Dark Crusade and Soulstorm | Example: 34h3-3r5t-34z6-347h-54g4
+    '// - used for Winter Assault, Dark Crusade and Soulstorm: (Example: 34h3-3r5t-34z6-347h-54g4)
     Public Const _GameKeyPattern_4 As String = "^[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]-[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]-[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]-[0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z][0-9,A-Z,a-z]$"
 #End Region
 
 #Region "Load Event Handling"
     Private Sub fmMain_Load_Handler(sender As Object, e As EventArgs) Handles Me.Load
-        '// Add a new line at the end of a existing log file.
+        '// Adds a new line at the end of an existing log file.
         Initialize_Log()
         Log_Msg(PREFIX.INFO, "Application Startup - Initialized Log system")
 
@@ -173,7 +184,7 @@ Public Class fmMain
                 Select Case MessageBox.Show("Would you like to see the log file?", "Process informations", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                     Case Windows.Forms.DialogResult.Yes
                         Try
-                            Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) & "\" & GetFullLogfilePath)
+                            Process.Start(GetFullLogfilePath)
                         Catch ex As Exception
                             MessageBox.Show("The log file couldn't be found!" & vbCrLf & vbCrLf & ex.Message, "Log file not found", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         End Try
@@ -198,35 +209,37 @@ Public Class fmMain
         End If
     End Sub
 
-    ''' <summary>Check if in the SoulstormFolder the Soulstorm.exe exists. If yes, check for updates for the Game.</summary>
+    ''' <summary>Check if the SoulstormFolder contains a Soulstorm.exe. If so, we compare the hash of the current Soulstorm.exe with our stored hashes.</summary>
     Private Function IsMatchSoulstormEXE(_TempSoulstormFolderPath As String) As Boolean
-        If File.Exists(_TempSoulstormFolderPath & "\Soulstorm.exe") Then
-            If FileVersionInfo.GetVersionInfo(_TempSoulstormFolderPath & "\Soulstorm.exe").FileVersion = "1, 4, 0, 0" Then
-                Log_Msg(PREFIX.INFO, "Functions - IsMatchSoulstormEXE - Soulstorm is UpToDate")
-                tbSoulstormInstallationDirectory.Text = PathShorten(_TempSoulstormFolderPath, 340, tbSoulstormInstallationDirectory.Font)
-                '// Save the complete path. Overrides the path set before by TextChanged event.
-                _SoulstormFolderPath = _TempSoulstormFolderPath
-            Else
-                Log_Msg(PREFIX.INFO, "Functions - IsMatchSoulstormEXE - Soulstorm Update available")
-                Select Case MessageBox.Show("You should update your Soulstorm installation. Download now?" & vbCrLf & vbCrLf & _
-                                            "Patch: SS_DE_1.20_Patch.zip | 111 MiB" & vbCrLf & _
-                                            "SHA1: fb26609a168b489d3fcd5aba6581b2154d9872de" & vbCrLf & vbCrLf & _
-                                            "Note: includes patch 1.1 and 1.2 in German.", _
-                                            "Patch(s) available! | Version: 1.4.0.0 | Current: " & _
-                                            FileVersionInfo.GetVersionInfo(_TempSoulstormFolderPath).FileVersion.Replace(" ", "").Replace(",", "."), MessageBoxButtons.YesNo, MessageBoxIcon.Information)
+        Dim _fiSoulstormExe As New FileInfo(Path.Combine(_TempSoulstormFolderPath, "Soulstorm.exe"))
+
+        If _fiSoulstormExe.Exists Then
+
+            Dim _SoulstormExeHash As String = SHA1_CalculateHash(_fiSoulstormExe)
+            If IsNothing(_KnownSoulstormHashes.FirstOrDefault(Function(v) String.Equals(v.Hash, _SoulstormExeHash))) OrElse Not String.Equals(_Soulstorm_Exe_1_2.Hash, _SoulstormExeHash) Then
+                Log_Msg(PREFIX.INFO, "Functions - IsMatchSoulstormEXE - Soulstorm Update available | Current Hash of the Soulstorm.exe: {0}", New Object() {_SoulstormExeHash})
+                Select Case MessageBox.Show("Seems like your Soulstorm installation isn't up-to date." & vbCrLf & _
+                                            "Would you like to visit the download site now?" & vbCrLf & _
+                                            "(Multi-language)", "Patch(es) available! | Version: 1.2.0", MessageBoxButtons.YesNo, MessageBoxIcon.Information)
                     Case Windows.Forms.DialogResult.Yes
                         Try
-                            Process.Start(_UpdateLink)
+                            Process.Start(SOULSTORM_PATCH_LINK)
                         Catch ex As Exception
-                            MessageBox.Show("Can't download the patch." & vbCrLf & "Download it from: '" & _UpdateLink & "'", "Connection error.", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                            MessageBox.Show("A error occurred, while accessing the website." & vbCrLf & _
+                                            "Visit the page manually: '" & SOULSTORM_PATCH_LINK & "'", "Connection error.", MessageBoxButtons.OK, MessageBoxIcon.Information)
                         End Try
                 End Select
+            Else
+                Log_Msg(PREFIX.INFO, "Functions - IsMatchSoulstormEXE - Soulstorm is UpToDate")
+                tbSoulstormInstallationDirectory.Text = PathShorten(_SoulstormFolderPath, 340, tbSoulstormInstallationDirectory.Font)
+                '// Save the complete path. Overrides the path set before by TextChanged event.
+                _SoulstormFolderPath = _fiSoulstormExe.DirectoryName
             End If
             Return True
         End If
-        Log_Msg(PREFIX.WARNING, "Functions - IsMatchSoulstormEXE - No Soulstorm.exe found. | Directory: '" & _TempSoulstormFolderPath & "\Soulstorm.exe'")
-        Select Case MessageBox.Show("Please check the installation path. The 'Soulstorm.exe' couldn't found!" & vbCrLf & _
-                                    "Selected: '" & _TempSoulstormFolderPath & "\Soulstorm.exe'", "Soulstorm.exe not found", MessageBoxButtons.OKCancel, MessageBoxIcon.Hand)
+        Log_Msg(PREFIX.WARNING, "Functions - IsMatchSoulstormEXE - No Soulstorm.exe found. | Directory: '" & _fiSoulstormExe.FullName & "'")
+        Select Case MessageBox.Show("Please check the installation path. The 'Soulstorm.exe' couldn't be found!" & vbCrLf & _
+                                    "'" & _fiSoulstormExe.FullName & "'", "Soulstorm.exe not found", MessageBoxButtons.OKCancel, MessageBoxIcon.Hand)
             Case Windows.Forms.DialogResult.OK
                 ChooseSoulstormPath()
         End Select
@@ -234,7 +247,60 @@ Public Class fmMain
     End Function
 #End Region
 
-#Region "Functions"
+#Region "Additional Methods"
+
+    ''' <summary>
+    ''' Calculates the SHA-1 hash for a given file.
+    ''' </summary>
+    ''' <param name="FileToHash">FileInfo of the input file.</param>
+    ''' <returns>Returns the SHA-1 Hash as upper case hex digits.</returns>
+    ''' <remarks>Make sure, that the file exists.</remarks>
+    Private Function SHA1_CalculateHash(FileToHash As FileInfo) As String
+        Const BLOCKSIZE As Integer = 256 * 256
+
+        Using _SHA1 As New SHA1CryptoServiceProvider, _fs As New FileStream(FileToHash.FullName, FileMode.Open, FileAccess.Read, FileShare.Read)
+            '// Get file size
+            Dim _fileSize As Long = _fs.Length
+
+            '// Declare buffer + other vars
+            Dim _readBuffer(BLOCKSIZE - 1) As Byte, _readBytes As Integer
+            Dim _transformBuffer As Byte(), _transformBytes As Integer, _transformBytesTotal As Long = 0
+            '// Read first block
+            _readBytes = _fs.Read(_readBuffer, 0, BLOCKSIZE)
+            '// Read + transform block wise
+            While _readBytes > 0
+                '// Save last read
+                _transformBuffer = _readBuffer
+                _transformBytes = _readBytes
+                '// Read buffer
+                _readBuffer = New Byte(BLOCKSIZE - 1) {}
+                _readBytes = _fs.Read(_readBuffer, 0, BLOCKSIZE)
+                '// Transform
+                Select Case _readBytes
+                    Case 0 : _SHA1.TransformFinalBlock(_transformBuffer, 0, _transformBytes)
+                    Case Else : _SHA1.TransformBlock(_transformBuffer, 0, _transformBytes, _transformBuffer, 0)
+                End Select
+                '// Inform about progress here
+                _transformBytesTotal += _transformBytes
+            End While
+            '// All done
+            Return HexStringFromBytes(_SHA1.Hash)
+        End Using
+    End Function
+
+    ''' <summary>
+    ''' Converts an array of bytes to a string of hex digits.
+    ''' </summary>
+    ''' <param name="bytes">Array of bytes.</param>
+    ''' <returns>String of upper case hex digits.</returns>
+    Public Shared Function HexStringFromBytes(bytes As Byte()) As String
+        Dim _sb = New System.Text.StringBuilder()
+        For Each b As Byte In bytes
+            _sb.Append(b.ToString("x2"))
+        Next
+        Return _sb.ToString.ToUpper
+    End Function
+
     ''' <summary>Get a shorted file/directory path if the path is to long.</summary>
     ''' <param name="_Path">The path which should be returned truncated.</param>
     ''' <param name="_Length">The Length in pixel which shouldn't be exceeded. </param>
@@ -393,7 +459,7 @@ Public Class fmMain
         tbDarkCrusadeKey_1.TextChanged, tbDarkCrusadeKey_2.TextChanged, tbDarkCrusadeKey_3.TextChanged, tbDarkCrusadeKey_4.TextChanged, tbDarkCrusadeKey_5.TextChanged, _
         tbSoulstormKey_1.TextChanged, tbSoulstormKey_2.TextChanged, tbSoulstormKey_3.TextChanged, tbSoulstormKey_4.TextChanged, tbSoulstormKey_5.TextChanged
 
-        '// Switch the current TextBox if it has 4 characters and check  if the entered game key is valid.
+        '// Switch the current TextBox if it contains 4 characters and check if the entered game key is valid.
         If _tb Is tbClassicKey_1 Or _tb Is tbClassicKey_2 Or _tb Is tbClassicKey_3 Or _tb Is tbClassicKey_4 Then
             If Regex.IsMatch(GetCompleteGameKey(GAME_ID.CLASSIC), _GameKeyPattern_4) Then
                 pbClassicStatus.Image = My.Resources.hacken1
@@ -439,7 +505,7 @@ Public Class fmMain
 #End Region
 
 #Region "Switch Management"
-    '// Switch the given TextBox, if it has 4 characters.
+    '// Switches the given TextBox, if it contains 4 characters.
     Private Sub SwitchTextBox(_tb As TextBox)
         If _tb.Text.Length = 4 Then
             Select Case True
