@@ -43,8 +43,8 @@ Module Mod_Log
             Return _LogBuilder.ToString
         End Get
     End Property
-    ''' <summary>Returns the name of the logfile including the type.</summary>
-    Public ReadOnly Property GetLogfileName As String
+    ''' <summary>Returns the full path to the log file including it's type.</summary>
+    Public ReadOnly Property GetFullLogfilePath As String
         Get
             Return _FiLogfile.FullName
         End Get
@@ -77,7 +77,7 @@ Module Mod_Log
         _strWrt.Dispose()
     End Sub
 
-    ''' <summary>Returns the header prefix for the logsystem.</summary>
+    ''' <summary>Returns the header prefix for the log system.</summary>
     Private Function GetSyntax(_Prefix As PREFIX) As String
         Return DateTime.Now.ToString("| yyyy.dd.MM | HH:mm ss | ") & [Enum].GetName(GetType(PREFIX), _Prefix) & " | "
     End Function

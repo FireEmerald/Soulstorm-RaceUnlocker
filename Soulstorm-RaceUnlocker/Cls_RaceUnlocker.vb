@@ -27,11 +27,11 @@ Imports System.IO
 Public Class Cls_RaceUnlocker
 
 #Region "Declarations"
-    '// Sub Directorys of the Game *.exe files.
+    '// Sub Directories of the *.exe files.
     Private _SubDirClassic As String = "Unlocker\Classic and Winter Assault"
     Private _SubDirDarkCrusade As String = "Unlocker\Dark Crusade"
 
-    '// Status of the registry and exe unlock process.
+    '// Status of the registry and executable unlock process.
     Private _RegistryUnlockStatus As String = ""
     Private _ExeUnlockStatus As String = ""
 
@@ -59,7 +59,7 @@ Public Class Cls_RaceUnlocker
         _SoulstormInstallationPath = SoulstormInstallationPath
     End Sub
 
-#Region "Propertys"
+#Region "Properties"
     Public ReadOnly Property GetRegistryUnlockStatus As String
         Get
             Return _RegistryUnlockStatus
@@ -73,7 +73,7 @@ Public Class Cls_RaceUnlocker
 #End Region
 
 #Region "Registry part"
-    ''' <summary>Edit the registry entrys of the games.</summary>
+    ''' <summary>Edit the registry entries of the games.</summary>
     Public Sub Unlock_Registry()
         Log_Msg(PREFIX.INFO, "Unlock - Start - Classic: '" & _ClassicGameKey.Substring(0, _ClassicGameKey.LastIndexOf("-")) & "-XXXX' | " & _
                                               "Winter Assault: '" & _WinterAssaultGameKey.Substring(0, _WinterAssaultGameKey.LastIndexOf("-")) & "-XXXX' | " & _
@@ -92,7 +92,7 @@ Public Class Cls_RaceUnlocker
             '// Delete the old THQ folder
             DeleteRegTHQ()
 
-            '// Create a new one with the directorys
+            '// Create a new one with the directories
             CreateRegDirectory("THQ")
 
             CreateRegDirectory(_DBClassic.RegGameSubDirectory, "THQ")
@@ -100,7 +100,7 @@ Public Class Cls_RaceUnlocker
             CreateRegDirectory(_DBSoulstorm.RegGameSubDirectory, "THQ")
             CreateRegDirectory("1.00.0000", "THQ\" & _DBSoulstorm.RegGameSubDirectory)
 
-            '// Insert the keys / installation directorys
+            '// Insert the keys / installation directories
             '// Classic & Winter Assault | Key, Key, InstallDir
             CreateRegKey(_DBClassic.RegSerialNumberKeyName, _ClassicGameKey, _DBClassic.RegGameSubDirectory)
             CreateRegKey(_DBWinterAssault.RegSerialNumberKeyName, _WinterAssaultGameKey, _DBClassic.RegGameSubDirectory)
@@ -126,7 +126,7 @@ Public Class Cls_RaceUnlocker
 
             _RegistryUnlockStatus = "done"
         Else
-            Log_Msg(PREFIX.EXCEPTION, "Unlock - Permission Test - Failed | Exception Msg: '" & _PermissionTestResult.Substring(_PermissionTestResult.LastIndexOf("%ex%")).Replace("%ex%", "") & "'")
+            Log_Msg(PREFIX.EXCEPTION, "Unlock - Permission Test - Failed | Exception MSG: '" & _PermissionTestResult.Substring(_PermissionTestResult.LastIndexOf("%ex%")).Replace("%ex%", "") & "'")
             _RegistryUnlockStatus = _PermissionTestResult.Substring(0, _PermissionTestResult.IndexOf("%ex%"))
         End If
     End Sub
@@ -154,13 +154,13 @@ Public Class Cls_RaceUnlocker
     End Function
 #End Region
 
-#Region "Exe part"
-    ''' <summary>Dublicate the GraphicsConfig.exe of Soulstorm and rename them like the addons.</summary>
+#Region "Executable part"
+    ''' <summary>Duplicate the GraphicsConfig.exe of Soulstorm and rename them like the add-ons.</summary>
     Public Sub Unlock_Exe()
         _ExeUnlockStatus = "no_error"
-        '// Exe unlock Process
+        '// Executable unlock Process
         If Directory.Exists(_SoulstormInstallationPath) Then
-            Log_Msg(PREFIX.INFO, "Unlock - Exe Unlock - Directory Exists | Path: '" & _SoulstormInstallationPath & "'")
+            Log_Msg(PREFIX.INFO, "Unlock - Executable Unlock - Directory Exists | Path: '" & _SoulstormInstallationPath & "'")
             '// ...\Dawn of War - Soulstorm\Unlocker
             CreateDirectory(_SoulstormInstallationPath & "\Unlocker")
             '// ...\Dawn of War - Soulstorm\Unlocker\Classic and Winter Assault
@@ -183,10 +183,10 @@ Public Class Cls_RaceUnlocker
         Catch ex As Exception
             If IsNothing(_Path) Then _Path = "NOTHING"
 
-            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateDirectory - Exeption | Path: '" & _Path & "'")
-            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateDirectory - Exeption | Message: '" & ex.ToString & "'")
-            _ExeUnlockStatus = "A error occured while creating a new directory in your Dawn of War directory." & vbCrLf & vbCrLf & _
-                               "Check the logfile for more informations."
+            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateDirectory - Exception | Path: '" & _Path & "'")
+            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateDirectory - Exception | Message: '" & ex.ToString & "'")
+            _ExeUnlockStatus = "A error occurred while creating a new directory in your Dawn of War directory." & vbCrLf & vbCrLf & _
+                               "Check the log file for more informations."
             Return False
         End Try
         Log_Msg(PREFIX.INFO, "Unlock - CreateDirectory - Successful | Path: '" & _Path & "'")
@@ -203,8 +203,8 @@ Public Class Cls_RaceUnlocker
 
             Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateApplication - Exception | Path/Game: '" & _Path & "'\'" & _Game.ExeName & "'")
             Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateApplication - Exception | Message: '" & ex.ToString & "'")
-            _ExeUnlockStatus = "A error occured while copying the fake exe files in your Dawn of War Soulstorm directory." & vbCrLf & vbCrLf & _
-                               "Check the logfile for more informations."
+            _ExeUnlockStatus = "A error occurred while copying the fake executable files into your Dawn of War Soulstorm directory." & vbCrLf & vbCrLf & _
+                               "Check the log file for more informations."
             Return False
         End Try
         Log_Msg(PREFIX.INFO, "Unlock - CreateApplication - Successful | Path: '" & _Path & "'\'" & _Game.ExeName & "'")

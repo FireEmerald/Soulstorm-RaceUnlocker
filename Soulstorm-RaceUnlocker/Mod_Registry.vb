@@ -26,13 +26,13 @@ Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
 
 Public Structure GameData
-    ''' <summary>Doesn't contain an Integer. Only for [ENUM].GetName(.GetType(GAME_ID), >Value.</summary>
+    ''' <summary>Used for [ENUM].GetName(.GetType(GAME_ID), >Value.</summary>
     Dim ID As GAME_ID
-    ''' <summary>The name of the GameEXE. (*.exe)</summary>
+    ''' <summary>The name of the (*.exe) file.</summary>
     Dim ExeName As String
-    ''' <summary>The name of the Registry Directory of a game. (Dawn of War)</summary>
+    ''' <summary>The name of the Registry Directory of the game. (Dawn of War)</summary>
     Dim RegGameSubDirectory As String
-    ''' <summary>The name of the entry of the gamekey. (CDKEY)</summary>
+    ''' <summary>The name of the entry of the game key. (CDKEY)</summary>
     Dim RegSerialNumberKeyName As String
     ''' <summary>The name of the entry of the InstallLocation. (InstallLocation)</summary>
     Dim RegInstallLocKeyName As String
@@ -42,8 +42,8 @@ Module Mod_Registry
 
 #Region "Declarations"
     '// Architecture-based THQ path (64/32 bit)
-    '// All 32bit Registrykeys are redirected to 'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node'
-    '// All 64bit Registrykeys stored in 'HKEY_LOCAL_MACHINE\SOFTWARE'
+    '// All 32bit Registry keys are redirected to 'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node'
+    '// All 64bit Registry keys stored in 'HKEY_LOCAL_MACHINE\SOFTWARE'
     '// All Dawn of War (Soulstorm or older) Applications are 32bit, so they are always at the 32bit directory.
     Private Const _THQ_SubKey As String = "SOFTWARE\THQ"
 
@@ -75,7 +75,7 @@ Module Mod_Registry
 
     ''' <summary>Creates a new registry key in the given "SOFTWARE\THQ\" >SubDirectory. If the key exists, he will be overwritten.</summary>
     Public Function CreateRegKey(_KeyName As String, _NewValue As String, Optional _SubDirectory As String = "") As Boolean
-        '// If the NewValue is a Serialnumber, mask it.
+        '// If the NewValue is a Serial number, mask it.
         Dim _LogNewValue As String = _NewValue
         If Regex.IsMatch(_NewValue, fmMain._GameKeyPattern_4) Or Regex.IsMatch(_NewValue, fmMain._GameKeyPattern_5) Then _LogNewValue = _NewValue.Substring(0, _NewValue.LastIndexOf("-")) & "-XXXX"
         Log_Msg(PREFIX.INFO, "Registry - CreateRegKey - (Prepare) Create New | KeyName: '" & _KeyName & "' | With Value: '" & _LogNewValue & "' | Sub Directory: (" & _BaseKey.ToString & "\" & _THQ_SubKey & ") '" & _SubDirectory & "'")
@@ -92,7 +92,7 @@ Module Mod_Registry
         Return RegCreateDirectory(_BaseKey, "SOFTWARE" & "\" & _ExistingSubDirectory, _NewSubDirectory)
     End Function
 
-    ''' <summary>Deletes the SOFTWARE\THQ directory with all sub directorys/keys.</summary>
+    ''' <summary>Deletes the SOFTWARE\THQ directory with all sub directories/keys.</summary>
     Public Function DeleteRegTHQ() As Boolean
         Log_Msg(PREFIX.INFO, "Registry - DeleteRegTHQ - (Prepare) Delete the THQ registry directory | Directory: '" & _BaseKey.ToString & "\" & _THQ_SubKey & "'")
         Return RegDeleteDirectory(_BaseKey, _THQ_SubKey)
@@ -120,8 +120,8 @@ Module Mod_Registry
                 If IsNothing(_RegSubDirectory) Then _RegSubDirectory = "NOTHING"
                 If IsNothing(_RegKeyName) Then _RegKeyName = "NOTHING"
 
-                Log_Msg(PREFIX.EXCEPTION, "Registry - RegRead - Exception occured | @RegDirectory: (Base: '" & _Base & "' | Sub: '" & _RegSubDirectory & "') '" & _Directory.ToString & "' @RegKeyName: '" & _RegKeyName & "'")
-                Log_Msg(PREFIX.EXCEPTION, "Registry - RegRead - Exception occured | Exception Msg: '" & ex.ToString & "'")
+                Log_Msg(PREFIX.EXCEPTION, "Registry - RegRead - Exception occurred | @RegDirectory: (Base: '" & _Base & "' | Sub: '" & _RegSubDirectory & "') '" & _Directory.ToString & "' @RegKeyName: '" & _RegKeyName & "'")
+                Log_Msg(PREFIX.EXCEPTION, "Registry - RegRead - Exception occurred | Exception MSG: '" & ex.ToString & "'")
             End Try
             Return ""
         End Try
@@ -143,7 +143,7 @@ Module Mod_Registry
             Try
                 '// "_Directory" still has the "NOTHING" value, if this fails. So we don't need to check if _Directory is Nothing.
                 _Directory = _RegBaseKey.OpenSubKey(_RegSubDirectory).ToString
-            Catch '// If we don't catch the exception, the application crashs. So we need it...
+            Catch '// If we don't catch the exception, the application crashes. So we need it...
             Finally
                 Dim _Base As String = "NOTHING"
                 If Not IsNothing(_RegBaseKey) Then _Base = _RegBaseKey.ToString
@@ -151,8 +151,8 @@ Module Mod_Registry
                 If IsNothing(_RegKeyName) Then _RegKeyName = "NOTHING"
                 If IsNothing(_NewValue) Then _NewValue = "NOTHING"
 
-                Log_Msg(PREFIX.EXCEPTION, "Registry - RegSet - Exception occured | @RegDirectory: (Base: '" & _Base & "' | Sub: '" & _RegSubDirectory & "') '" & _Directory & "' | @RegKeyName: '" & _RegKeyName & "' | @NewValue: '" & _NewValue & "'")
-                Log_Msg(PREFIX.EXCEPTION, "Registry - RegSet - Exception occured | Exception Msg: '" & ex.ToString & "'")
+                Log_Msg(PREFIX.EXCEPTION, "Registry - RegSet - Exception occurred | @RegDirectory: (Base: '" & _Base & "' | Sub: '" & _RegSubDirectory & "') '" & _Directory & "' | @RegKeyName: '" & _RegKeyName & "' | @NewValue: '" & _NewValue & "'")
+                Log_Msg(PREFIX.EXCEPTION, "Registry - RegSet - Exception occurred | Exception MSG: '" & ex.ToString & "'")
             End Try
             Return False
         End Try
@@ -178,15 +178,15 @@ Module Mod_Registry
                 If IsNothing(_RegSubDirectory) Then _RegSubDirectory = "NOTHING"
                 If IsNothing(_NewSubDirectory) Then _NewSubDirectory = "NOTHING"
 
-                Log_Msg(PREFIX.EXCEPTION, "Registry - RegCreateDirectory - Exception occured | @RegDirectory: (Base: '" & _Base & "' | Sub: '" & _RegSubDirectory & "') '" & _Directory.ToString & "' | @NewSubDirectory: '" & _NewSubDirectory & "'")
-                Log_Msg(PREFIX.EXCEPTION, "Registry - RegCreateDirectory - Exception occured | Exception Msg: '" & ex.ToString & "'")
+                Log_Msg(PREFIX.EXCEPTION, "Registry - RegCreateDirectory - Exception occurred | @RegDirectory: (Base: '" & _Base & "' | Sub: '" & _RegSubDirectory & "') '" & _Directory.ToString & "' | @NewSubDirectory: '" & _NewSubDirectory & "'")
+                Log_Msg(PREFIX.EXCEPTION, "Registry - RegCreateDirectory - Exception occurred | Exception MSG: '" & ex.ToString & "'")
             End Try
             Return False
         End Try
         Return True
     End Function
 
-    ''' <summary>Deletes a complete directory. Including all sub keys/directorys.</summary>
+    ''' <summary>Deletes a complete directory. Including all sub keys/directories.</summary>
     ''' <param name="_RegBaseDirectory">The directory which contains the sub directory which should be deleted.</param>
     ''' <param name="_DelDirectory">The sub directory of the base directory, which should be deleted.</param>
     ''' <returns>Returns True if deleted successfully. Otherwise you will get False.</returns>
@@ -198,8 +198,8 @@ Module Mod_Registry
             If Not IsNothing(_RegBaseDirectory) Then _Directory = _RegBaseDirectory.ToString
             If IsNothing(_DelDirectory) Then _DelDirectory = "NOTHING"
 
-            Log_Msg(PREFIX.EXCEPTION, "Registry - RegDeleteDirectory - Exception occured | @RegBaseDirectory: '" & _Directory.ToString & "' | @RegDelDirectory: '" & _DelDirectory & "'")
-            Log_Msg(PREFIX.EXCEPTION, "Registry - RegDeleteDirectory - Exception occured | Exception Msg: '" & ex.ToString & "'")
+            Log_Msg(PREFIX.EXCEPTION, "Registry - RegDeleteDirectory - Exception occurred | @RegBaseDirectory: '" & _Directory.ToString & "' | @RegDelDirectory: '" & _DelDirectory & "'")
+            Log_Msg(PREFIX.EXCEPTION, "Registry - RegDeleteDirectory - Exception occurred | Exception MSG: '" & ex.ToString & "'")
             Return False
         End Try
         Return True
@@ -244,8 +244,8 @@ Module Mod_Registry
             '// Exception handling ...
         Catch ex As Security.SecurityException : Return "You don't have the required permissions to delete a registry key." & GetException(ex)
         Catch ex As UnauthorizedAccessException : Return "You don't have the necessary registry rights." & GetException(ex)
-        Catch ex As ArgumentNullException : Return "subkey is Nothing." & GetException(ex)
-        Catch ex As ArgumentException : Return "Deletion of a root hive is attempted or subkey does not specify a valid registry subkey." & GetException(ex)
+        Catch ex As ArgumentNullException : Return "Sub key is Nothing." & GetException(ex)
+        Catch ex As ArgumentException : Return "Deletion of a root hive is attempted or sub key does not specify a valid registry sub key." & GetException(ex)
         Catch ex As Exception : Return "Something went wrong while accessing your registry (delete)." & GetException(ex)
         End Try
 

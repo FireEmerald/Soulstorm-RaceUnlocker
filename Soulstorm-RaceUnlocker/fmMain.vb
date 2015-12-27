@@ -35,8 +35,8 @@ End Enum
 
 Public Class fmMain
 #Region "Declarations"
-    '// Link to the Stormblade patches.
-    Private Const _UpdateLink As String = "http://fire-emerald.com/custom/patches/ss_de_1.20_patch.zip"
+    '// Link to the Soulstorm patches.
+    Private Const _UpdateLink As String = "http://www.patches-scrolls.de/patch/4741/7/"
     '// Complete Soulstorm folder path
     Private _SoulstormFolderPath As String = ""
 
@@ -48,20 +48,20 @@ Public Class fmMain
 
 #Region "Load Event Handling"
     Private Sub fmMain_Load_Handler(sender As Object, e As EventArgs) Handles Me.Load
-        '// Add a new line at the end of a existing logfile.
+        '// Add a new line at the end of a existing log file.
         Initialize_Log()
-        Log_Msg(PREFIX.INFO, "Application Startup - Initialized Logsystem")
+        Log_Msg(PREFIX.INFO, "Application Startup - Initialized Log system")
 
         Log_Msg(PREFIX.INFO, "Application Startup - RaceUnlocker - Version: '{0}'", New Object() {My.Application.Info.Version.ToString})
 
         Log_Msg(PREFIX.INFO, "Application Startup - System informations - Windows: '{0}'", New Object() {Environment.OSVersion.VersionString})
         Log_Msg(PREFIX.INFO, "Application Startup - System informations - 64 Bit: '{0}'", New Object() {GetOS_ArchitectureAsString()})
 
-        Log_Msg(PREFIX.INFO, "Application Startup - System informations - All 32bit Registrykeys are redirected to 'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node'")
-        Log_Msg(PREFIX.INFO, "Application Startup - System informations - All 64bit Registrykeys stored in 'HKEY_LOCAL_MACHINE\SOFTWARE'")
+        Log_Msg(PREFIX.INFO, "Application Startup - System informations - All 32bit Registry keys are redirected to 'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node'")
+        Log_Msg(PREFIX.INFO, "Application Startup - System informations - All 64bit Registry keys stored in 'HKEY_LOCAL_MACHINE\SOFTWARE'")
         Log_Msg(PREFIX.INFO, "Application Startup - System informations - All Dawn of War (Soulstorm or older) Applications are 32bit, so they are always at the 32bit directory.")
 
-        Log_Msg(PREFIX.INFO, "Application Startup - Loading Backgroundcolors")
+        Log_Msg(PREFIX.INFO, "Application Startup - Loading Background colors")
         '// Transparent for each Status Icon's Background (Images are PNG)
         pbClassicStatus.BackColor = Color.Transparent
         pbWinterAssaultStatus.BackColor = Color.Transparent
@@ -78,7 +78,7 @@ Public Class fmMain
         Log_Msg(PREFIX.INFO, "Application Startup - Soulstorm Installation Path - RegPath: '" & _SoulstormFolderPath & "' | RegPathResized: '" & tbSoulstormInstallationDirectory.Text & "'")
 
         If Regex.IsMatch(GetRegGameKey(_DBClassic), _GameKeyPattern_4) Then
-            Log_Msg(PREFIX.INFO, "Application Startup - Regex Game Key - Is Match | Affected Game: Classic")
+            Log_Msg(PREFIX.INFO, "Application Startup - RegEx Game Key - Is Match | Affected Game: Classic")
             '// Classic
             Dim _ClassicGameKeyParts As List(Of String) = GetGameKeyParts(GetRegGameKey(_DBClassic))
             tbClassicKey_1.Text = _ClassicGameKeyParts.Item(0)
@@ -87,7 +87,7 @@ Public Class fmMain
             tbClassicKey_4.Text = _ClassicGameKeyParts.Item(3)
         End If
         If Regex.IsMatch(GetRegGameKey(_DBWinterAssault), _GameKeyPattern_5) Then
-            Log_Msg(PREFIX.INFO, "Application Startup - Regex Game Key - Is Match | Affected Game: Winter Assault")
+            Log_Msg(PREFIX.INFO, "Application Startup - RegEx Game Key - Is Match | Affected Game: Winter Assault")
             '// Winter Assault
             Dim _WinterAssaultGameKeyParts As List(Of String) = GetGameKeyParts(GetRegGameKey(_DBWinterAssault))
             tbWinterAssaultKey_1.Text = _WinterAssaultGameKeyParts.Item(0)
@@ -97,7 +97,7 @@ Public Class fmMain
             tbWinterAssaultKey_5.Text = _WinterAssaultGameKeyParts.Item(4)
         End If
         If Regex.IsMatch(GetRegGameKey(_DBDarkCrusade), _GameKeyPattern_5) Then
-            Log_Msg(PREFIX.INFO, "Application Startup - Regex Game Key - Is Match | Affected Game: Dark Crusade")
+            Log_Msg(PREFIX.INFO, "Application Startup - RegEx Game Key - Is Match | Affected Game: Dark Crusade")
             '// Dark Crusade
             Dim _DarkCrusadeGameKeyParts As List(Of String) = GetGameKeyParts(GetRegGameKey(_DBDarkCrusade))
             tbDarkCrusadeKey_1.Text = _DarkCrusadeGameKeyParts.Item(0)
@@ -107,7 +107,7 @@ Public Class fmMain
             tbDarkCrusadeKey_5.Text = _DarkCrusadeGameKeyParts.Item(4)
         End If
         If Regex.IsMatch(GetRegGameKey(_DBSoulstorm), _GameKeyPattern_5) Then
-            Log_Msg(PREFIX.INFO, "Application Startup - Regex Game Key - Is Match | Affected Game: Soulstorm")
+            Log_Msg(PREFIX.INFO, "Application Startup - RegEx Game Key - Is Match | Affected Game: Soulstorm")
             '// Soulstorm
             Dim _SoulstormGameKeyParts As List(Of String) = GetGameKeyParts(GetRegGameKey(_DBSoulstorm))
             tbSoulstormKey_1.Text = _SoulstormGameKeyParts.Item(0)
@@ -157,7 +157,7 @@ Public Class fmMain
                                                 "Anyway, would you like to unlock the *.exe files?" & vbCrLf & _
                                                 "(It's NOT recommended. The Unlock will NOT work!)" & vbCrLf & vbCrLf & _
                                                 "Check the 'Race Unlocker Log.log' on your Desktop for" & vbCrLf & _
-                                                "more informations.", "Registry unlock error occured", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+                                                "more informations.", "Registry unlock error occurred", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                         Case DialogResult.Yes
                             _Unlocker.Unlock_Exe()
 
@@ -169,13 +169,13 @@ Public Class fmMain
                     End Select
                 End If
 
-                '// Show the logfile if user want to see it.
-                Select Case MessageBox.Show("Would you like to see the logfile?", "Process informations", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                '// Show the log file if user want to see it.
+                Select Case MessageBox.Show("Would you like to see the log file?", "Process informations", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                     Case Windows.Forms.DialogResult.Yes
                         Try
-                            Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) & "\" & GetLogfileName)
+                            Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) & "\" & GetFullLogfilePath)
                         Catch ex As Exception
-                            MessageBox.Show("The logfile couldn't be found!" & vbCrLf & vbCrLf & ex.Message, "Logfile not found", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            MessageBox.Show("The log file couldn't be found!" & vbCrLf & vbCrLf & ex.Message, "Log file not found", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         End Try
                 End Select
                 '// Unlock process END
@@ -211,7 +211,7 @@ Public Class fmMain
                 Select Case MessageBox.Show("You should update your Soulstorm installation. Download now?" & vbCrLf & vbCrLf & _
                                             "Patch: SS_DE_1.20_Patch.zip | 111 MiB" & vbCrLf & _
                                             "SHA1: fb26609a168b489d3fcd5aba6581b2154d9872de" & vbCrLf & vbCrLf & _
-                                            "Note: includes patch 1.1 and 1.2 in german.", _
+                                            "Note: includes patch 1.1 and 1.2 in German.", _
                                             "Patch(s) available! | Version: 1.4.0.0 | Current: " & _
                                             FileVersionInfo.GetVersionInfo(_TempSoulstormFolderPath).FileVersion.Replace(" ", "").Replace(",", "."), MessageBoxButtons.YesNo, MessageBoxIcon.Information)
                     Case Windows.Forms.DialogResult.Yes
@@ -246,7 +246,7 @@ Public Class fmMain
         Dim LastPart As String = PathParts(PathParts.Length - 1)
         Dim PrevPath As String = ""
 
-        'Erst prüfen ob der komplette String evtl. bereits kürzer als die Maximallänge ist
+        '// We check first, if the complete String is shorter then the max length.
         If TextRenderer.MeasureText(_Path, _TextFont).Width < _Length Then
             Return _Path
         End If
