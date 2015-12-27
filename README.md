@@ -3,7 +3,7 @@
 
 ## Introduction
 
-Soulstorm-RaceUnlocker is a *Tool* for Dawn of War - Soulstorm based in VB.net 2013.
+Soulstorm-RaceUnlocker is a *Tool* for Dawn of War - Soulstorm based in VB.NET 2013.
 
 This Tool unlocks all races of every Add-On in Dawn of War - Soulstorm without installing them.
 So you just need Soulstorm installed but you need a valid serial number for each other expansion!
@@ -16,7 +16,7 @@ So you just need Soulstorm installed but you need a valid serial number for each
 ## Requirements
 
 + Platform: Windows (32/64bit)
-+ Supported: 2000, XP, 2003, Vista, 7 and 8.
++ Supported: 2000, XP, 2003, Vista, 7, 8 and 10.
 + .NET Framework ≥ 4.0
 + MS Visual Studio Express ≥ 2012
 
@@ -32,7 +32,7 @@ No installation required.
 - Start the [Soulstorm - Race Unlocker.exe](https://github.com/FireEmerald/Soulstorm-RaceUnlocker/raw/master/release/Soulstorm%20-%20Race%20Unlocker.exe)
 - Insert your serial numbers of each expansion and for Soulstorm
 - Select the installation location of Soulstorm
-- Click *Unlock*, done.
+- Click *Unlock*, done!
 
 Now you should be able to play Dawn of War - Soulstorm and select each race without installed expansions.
 If you get an error, you should take a look at the "Race Unlocker Log.log" at your desktop.

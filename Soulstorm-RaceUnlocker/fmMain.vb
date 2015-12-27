@@ -188,7 +188,7 @@ Public Class fmMain
 
 #Region "Soulstorm Path Selection/Check"
     Private Sub ChooseSoulstormPath()
-        Dim _FolderDialog As FolderBrowserDialog = New FolderBrowserDialog With {.Description = "Dawn of War - Soulstorm, directory.", _
+        Dim _FolderDialog As FolderBrowserDialog = New FolderBrowserDialog With {.Description = "Select your Dawn of War - Soulstorm directory:", _
                                                                                  .ShowNewFolderButton = False}
 
         If _FolderDialog.ShowDialog() = Windows.Forms.DialogResult.OK Then
@@ -339,7 +339,7 @@ Public Class fmMain
     Private Function GetOS_FriendlyName() As String
         Dim _name As Object = (From x In New ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem").Get.Cast(Of ManagementObject)() _
                                Select x.GetPropertyValue("Caption")).FirstOrDefault()
-        Return If(_name IsNot Nothing, _name.ToString(), "Unknown")
+        Return If(_name IsNot Nothing, _name.ToString.Trim(), "Unknown")
     End Function
 #End Region
 
