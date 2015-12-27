@@ -1,4 +1,4 @@
-﻿# Soulstorm-RaceUnlocker
+﻿# ![logo](https://github.com/FireEmerald/Soulstorm-RaceUnlocker/raw/master/images/chaos_150.png) Soulstorm - Race Unlocker
 #### Blood for the Blood God !
 
 ## Introduction
