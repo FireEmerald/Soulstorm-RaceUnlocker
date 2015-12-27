@@ -23,8 +23,7 @@ So you just need Soulstorm installed but you need a valid serial number for each
 
 ## Install
 
-Just run the [Soulstorm - Race Unlocker.exe](https://github.com/FireEmerald/Soulstorm-RaceUnlocker/raw/master/release/Soulstorm%20-%20Race%20Unlocker.exe) in the \Soulstorm-RaceUnlocker\release folder.
-No installation required.
+Just run the [Soulstorm - Race Unlocker.exe](https://github.com/FireEmerald/Soulstorm-RaceUnlocker/raw/master/release/Soulstorm%20-%20Race%20Unlocker.exe). No installation required.
 
 
 ## How to use
