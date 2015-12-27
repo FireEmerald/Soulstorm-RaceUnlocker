@@ -1,5 +1,5 @@
 ﻿
-'* Copyright (C) 2013-2014 FireEmerald <https://github.com/FireEmerald>
+'* Copyright (C) 2013-2015 FireEmerald <https://github.com/FireEmerald>
 '* Copyright (C) 2008-2009 n0|Belial2003 <http://dow.4players.de/forum/index.php?page=User&userID=10286&s=4d85aca336eaa03924c488f8e7e6ed7cd7389caa>
 '*
 '* Project: Soulstorm - Race Unlocker
@@ -63,13 +63,13 @@ Module Mod_Registry
 #Region "Program-specific functions"
     ''' <summary>Returns the GameKey of a Game. If the entry was found "" will be returned.</summary>
     Public Function GetRegGameKey(_Game As GameData) As String
-        Log_Msg(PRÄFIX.INFO, "Registry - GetRegGameKey - (Prepare) Get Key | Directory: (" + _BaseKey.ToString + ") """ + _THQ_SubKey + "\" + _Game.RegGameSubDirectory + """ | Type: """ + _Game.RegSerialNumberKeyName + """")
+        Log_Msg(PREFIX.INFO, "Registry - GetRegGameKey - (Prepare) Get Key | Directory: (" + _BaseKey.ToString + ") """ + _THQ_SubKey + "\" + _Game.RegGameSubDirectory + """ | Type: """ + _Game.RegSerialNumberKeyName + """")
         Return RegReadKey(_BaseKey, _THQ_SubKey + "\" + _Game.RegGameSubDirectory, _Game.RegSerialNumberKeyName)
     End Function
 
     ''' <summary>Returns the InstallLocation of a Game. If the entry was found "" will be returned.</summary>
     Public Function GetRegInstallDirectory(_Game As GameData) As String
-        Log_Msg(PRÄFIX.INFO, "Registry - GetRegInstallDirectory - (Prepare) Get InstallLocation | Directory: (" + _BaseKey.ToString + ") """ + _THQ_SubKey + "\" + _Game.RegGameSubDirectory + """ | Type: """ + _Game.RegSerialNumberKeyName + """")
+        Log_Msg(PREFIX.INFO, "Registry - GetRegInstallDirectory - (Prepare) Get InstallLocation | Directory: (" + _BaseKey.ToString + ") """ + _THQ_SubKey + "\" + _Game.RegGameSubDirectory + """ | Type: """ + _Game.RegSerialNumberKeyName + """")
         Return RegReadKey(_BaseKey, _THQ_SubKey + "\" + _Game.RegGameSubDirectory, _Game.RegInstallLocKeyName)
     End Function
 
@@ -78,7 +78,7 @@ Module Mod_Registry
         '// If the NewValue is a Serialnumber, mask it.
         Dim _LogNewValue As String = _NewValue
         If Regex.IsMatch(_NewValue, fmMain._GameKeyPattern_4) Or Regex.IsMatch(_NewValue, fmMain._GameKeyPattern_5) Then _LogNewValue = _NewValue.Substring(0, _NewValue.LastIndexOf("-")) + "-XXXX"
-        Log_Msg(PRÄFIX.INFO, "Registry - CreateRegKey - (Prepare) Create New | KeyName: """ + _KeyName + """ | With Value: """ + _LogNewValue + """ | Sub Directory: (" + _BaseKey.ToString + "\" + _THQ_SubKey + ") """ + _SubDirectory + """")
+        Log_Msg(PREFIX.INFO, "Registry - CreateRegKey - (Prepare) Create New | KeyName: """ + _KeyName + """ | With Value: """ + _LogNewValue + """ | Sub Directory: (" + _BaseKey.ToString + "\" + _THQ_SubKey + ") """ + _SubDirectory + """")
 
         If _SubDirectory = "" Then Return RegCreateKey(_BaseKey, _THQ_SubKey, _KeyName, _NewValue)
         Return RegCreateKey(_BaseKey, _THQ_SubKey + "\" + _SubDirectory, _KeyName, _NewValue)
@@ -86,7 +86,7 @@ Module Mod_Registry
 
     ''' <summary>Creates a SubDirectory in "SOFTWARE\" >ExistingSubDirectory \ >NewSubDirectory.</summary>
     Public Function CreateRegDirectory(_NewSubDirectory As String, Optional _ExistingSubDirectory As String = "") As Boolean
-        Log_Msg(PRÄFIX.INFO, "Registry - CreateRegDirectory - (Prepare) Create New | NewSubDirectory: """ + _NewSubDirectory + """ | ExistingSubDirectory: (SOFTWARE) """ + _ExistingSubDirectory + """")
+        Log_Msg(PREFIX.INFO, "Registry - CreateRegDirectory - (Prepare) Create New | NewSubDirectory: """ + _NewSubDirectory + """ | ExistingSubDirectory: (SOFTWARE) """ + _ExistingSubDirectory + """")
 
         If _ExistingSubDirectory = "" Then Return RegCreateDirectory(_BaseKey, "SOFTWARE", _NewSubDirectory)
         Return RegCreateDirectory(_BaseKey, "SOFTWARE" + "\" + _ExistingSubDirectory, _NewSubDirectory)
@@ -94,7 +94,7 @@ Module Mod_Registry
 
     ''' <summary>Deletes the SOFTWARE\THQ directory with all sub directorys/keys.</summary>
     Public Function DeleteRegTHQ() As Boolean
-        Log_Msg(PRÄFIX.INFO, "Registry - DeleteRegTHQ - (Prepare) Delete the THQ registry directory | Directory: """ + _BaseKey.ToString + "\" + _THQ_SubKey + """")
+        Log_Msg(PREFIX.INFO, "Registry - DeleteRegTHQ - (Prepare) Delete the THQ registry directory | Directory: """ + _BaseKey.ToString + "\" + _THQ_SubKey + """")
         Return RegDeleteDirectory(_BaseKey, _THQ_SubKey)
     End Function
 #End Region
@@ -120,8 +120,8 @@ Module Mod_Registry
                 If IsNothing(_RegSubDirectory) Then _RegSubDirectory = "NOTHING"
                 If IsNothing(_RegKeyName) Then _RegKeyName = "NOTHING"
 
-                Log_Msg(PRÄFIX.EXCEPTION, "Registry - RegRead - Exception occured | @RegDirectory: (Base: """ + _Base + """ | Sub: """ + _RegSubDirectory + """) """ + _Directory.ToString + """ @RegKeyName: """ + _RegKeyName + """")
-                Log_Msg(PRÄFIX.EXCEPTION, "Registry - RegRead - Exception occured | Exception Msg: """ + ex.ToString + """")
+                Log_Msg(PREFIX.EXCEPTION, "Registry - RegRead - Exception occured | @RegDirectory: (Base: """ + _Base + """ | Sub: """ + _RegSubDirectory + """) """ + _Directory.ToString + """ @RegKeyName: """ + _RegKeyName + """")
+                Log_Msg(PREFIX.EXCEPTION, "Registry - RegRead - Exception occured | Exception Msg: """ + ex.ToString + """")
             End Try
             Return ""
         End Try
@@ -151,8 +151,8 @@ Module Mod_Registry
                 If IsNothing(_RegKeyName) Then _RegKeyName = "NOTHING"
                 If IsNothing(_NewValue) Then _NewValue = "NOTHING"
 
-                Log_Msg(PRÄFIX.EXCEPTION, "Registry - RegSet - Exception occured | @RegDirectory: (Base: """ + _Base + """ | Sub: """ + _RegSubDirectory + """) """ + _Directory + """ | @RegKeyName: """ + _RegKeyName + """ | @NewValue: """ + _NewValue + """")
-                Log_Msg(PRÄFIX.EXCEPTION, "Registry - RegSet - Exception occured | Exception Msg: """ + ex.ToString + """")
+                Log_Msg(PREFIX.EXCEPTION, "Registry - RegSet - Exception occured | @RegDirectory: (Base: """ + _Base + """ | Sub: """ + _RegSubDirectory + """) """ + _Directory + """ | @RegKeyName: """ + _RegKeyName + """ | @NewValue: """ + _NewValue + """")
+                Log_Msg(PREFIX.EXCEPTION, "Registry - RegSet - Exception occured | Exception Msg: """ + ex.ToString + """")
             End Try
             Return False
         End Try
@@ -178,8 +178,8 @@ Module Mod_Registry
                 If IsNothing(_RegSubDirectory) Then _RegSubDirectory = "NOTHING"
                 If IsNothing(_NewSubDirectory) Then _NewSubDirectory = "NOTHING"
 
-                Log_Msg(PRÄFIX.EXCEPTION, "Registry - RegCreateDirectory - Exception occured | @RegDirectory: (Base: """ + _Base + """ | Sub: """ + _RegSubDirectory + """) """ + _Directory.ToString + """ | @NewSubDirectory: """ + _NewSubDirectory + """")
-                Log_Msg(PRÄFIX.EXCEPTION, "Registry - RegCreateDirectory - Exception occured | Exception Msg: """ + ex.ToString + """")
+                Log_Msg(PREFIX.EXCEPTION, "Registry - RegCreateDirectory - Exception occured | @RegDirectory: (Base: """ + _Base + """ | Sub: """ + _RegSubDirectory + """) """ + _Directory.ToString + """ | @NewSubDirectory: """ + _NewSubDirectory + """")
+                Log_Msg(PREFIX.EXCEPTION, "Registry - RegCreateDirectory - Exception occured | Exception Msg: """ + ex.ToString + """")
             End Try
             Return False
         End Try
@@ -198,8 +198,8 @@ Module Mod_Registry
             If Not IsNothing(_RegBaseDirectory) Then _Directory = _RegBaseDirectory.ToString
             If IsNothing(_DelDirectory) Then _DelDirectory = "NOTHING"
 
-            Log_Msg(PRÄFIX.EXCEPTION, "Registry - RegDeleteDirectory - Exception occured | @RegBaseDirectory: """ + _Directory.ToString + """ | @RegDelDirectory: """ + _DelDirectory + """")
-            Log_Msg(PRÄFIX.EXCEPTION, "Registry - RegDeleteDirectory - Exception occured | Exception Msg: """ + ex.ToString + """")
+            Log_Msg(PREFIX.EXCEPTION, "Registry - RegDeleteDirectory - Exception occured | @RegBaseDirectory: """ + _Directory.ToString + """ | @RegDelDirectory: """ + _DelDirectory + """")
+            Log_Msg(PREFIX.EXCEPTION, "Registry - RegDeleteDirectory - Exception occured | Exception Msg: """ + ex.ToString + """")
             Return False
         End Try
         Return True
@@ -212,8 +212,8 @@ Module Mod_Registry
         Dim _TestKey_Value As String = "BLOOD FOR THE BLOOD GOD"
         Dim _TestKey_Directory As String = "CHAOS"
 
-        Log_Msg(PRÄFIX.INFO, "Registry - RegistryPermissionTest - Start")
-        Log_Msg(PRÄFIX.INFO, "Registry - RegistryPermissionTest - Create TestKey, directory: """ + _BaseKey.ToString + "\SOFTWARE\" + _TestKey_Directory + """ | Key: """ + _TestKey_Name + """ | Value: """ + _TestKey_Value + """")
+        Log_Msg(PREFIX.INFO, "Registry - RegistryPermissionTest - Start")
+        Log_Msg(PREFIX.INFO, "Registry - RegistryPermissionTest - Create TestKey, directory: """ + _BaseKey.ToString + "\SOFTWARE\" + _TestKey_Directory + """ | Key: """ + _TestKey_Name + """ | Value: """ + _TestKey_Value + """")
         Try
             '// Create a new registry directory with a new key.
             _BaseKey.OpenSubKey("SOFTWARE", True).CreateSubKey(_TestKey_Directory).SetValue(_TestKey_Name, _TestKey_Value)
@@ -224,7 +224,7 @@ Module Mod_Registry
         Catch ex As Exception : Return "Something went wrong while accessing your registry (write)." + GetException(ex)
         End Try
 
-        Log_Msg(PRÄFIX.INFO, "Registry - RegistryPermissionTest - Read TestKey value, from directory: """ + _BaseKey.ToString + "\SOFTWARE\" + _TestKey_Directory + """ | Key: """ + _TestKey_Name + """")
+        Log_Msg(PREFIX.INFO, "Registry - RegistryPermissionTest - Read TestKey value, from directory: """ + _BaseKey.ToString + "\SOFTWARE\" + _TestKey_Directory + """ | Key: """ + _TestKey_Name + """")
         Dim _RegValue As String = ""
         Try
             '// Try to read the new registered keyValue.
@@ -237,7 +237,7 @@ Module Mod_Registry
 
         If Not _RegValue = _TestKey_Value Then Return "Something went wrong while accessing your registry (check)."
 
-        Log_Msg(PRÄFIX.INFO, "Registry - RegistryPermissionTest - Delete TestKey directory: """ + _BaseKey.ToString + "\SOFTWARE\" + _TestKey_Directory + """")
+        Log_Msg(PREFIX.INFO, "Registry - RegistryPermissionTest - Delete TestKey directory: """ + _BaseKey.ToString + "\SOFTWARE\" + _TestKey_Directory + """")
         Try
             '// Delete the registered key and the directory.
             _BaseKey.OpenSubKey("SOFTWARE", True).DeleteSubKeyTree(_TestKey_Directory)

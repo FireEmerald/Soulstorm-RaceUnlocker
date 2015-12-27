@@ -1,5 +1,5 @@
 ﻿
-'* Copyright (C) 2013-2014 FireEmerald <https://github.com/FireEmerald>
+'* Copyright (C) 2013-2015 FireEmerald <https://github.com/FireEmerald>
 '* Copyright (C) 2008-2009 n0|Belial2003 <http://dow.4players.de/forum/index.php?page=User&userID=10286&s=4d85aca336eaa03924c488f8e7e6ed7cd7389caa>
 '*
 '* Project: Soulstorm - Race Unlocker
@@ -51,7 +51,7 @@ Public Class Cls_RaceUnlocker
 #End Region
 
     Sub New(ClassicKey As String, WinterAssaultKey As String, DarkCrusadeKey As String, SoulstormKey As String, SoulstormInstallationPath As String)
-        Log_Msg(PRÄFIX.INFO, "Unlock - Initialize")
+        Log_Msg(PREFIX.INFO, "Unlock - Initialize")
         _ClassicGameKey = ClassicKey
         _WinterAssaultGameKey = WinterAssaultKey
         _DarkCrusadeGameKey = DarkCrusadeKey
@@ -75,7 +75,7 @@ Public Class Cls_RaceUnlocker
 #Region "Registry part"
     ''' <summary>Edit the registry entrys of the games.</summary>
     Public Sub Unlock_Registry()
-        Log_Msg(PRÄFIX.INFO, "Unlock - Start - Classic: """ + _ClassicGameKey.Substring(0, _ClassicGameKey.LastIndexOf("-")) + "-XXXX"" | " + _
+        Log_Msg(PREFIX.INFO, "Unlock - Start - Classic: """ + _ClassicGameKey.Substring(0, _ClassicGameKey.LastIndexOf("-")) + "-XXXX"" | " + _
                                               "Winter Assault: """ + _WinterAssaultGameKey.Substring(0, _WinterAssaultGameKey.LastIndexOf("-")) + "-XXXX"" | " + _
                                               "Dark Crusade: """ + _DarkCrusadeGameKey.Substring(0, _DarkCrusadeGameKey.LastIndexOf("-")) + "-XXXX"" | " + _
                                               "Soulstorm: " + _SoulstormGameKey.Substring(0, _SoulstormGameKey.LastIndexOf("-")) + "-XXXX"" | " + _
@@ -126,7 +126,7 @@ Public Class Cls_RaceUnlocker
 
             _RegistryUnlockStatus = "done"
         Else
-            Log_Msg(PRÄFIX.EXCEPTION, "Unlock - Permission Test - Failed | Exception Msg: """ + _PermissionTestResult.Substring(_PermissionTestResult.LastIndexOf("%ex%")).Replace("%ex%", "") + """")
+            Log_Msg(PREFIX.EXCEPTION, "Unlock - Permission Test - Failed | Exception Msg: """ + _PermissionTestResult.Substring(_PermissionTestResult.LastIndexOf("%ex%")).Replace("%ex%", "") + """")
             _RegistryUnlockStatus = _PermissionTestResult.Substring(0, _PermissionTestResult.IndexOf("%ex%"))
         End If
     End Sub
@@ -160,7 +160,7 @@ Public Class Cls_RaceUnlocker
         _ExeUnlockStatus = "no_error"
         '// Exe unlock Process
         If Directory.Exists(_SoulstormInstallationPath) Then
-            Log_Msg(PRÄFIX.INFO, "Unlock - Exe Unlock - Directory Exists | Path: """ + _SoulstormInstallationPath + """")
+            Log_Msg(PREFIX.INFO, "Unlock - Exe Unlock - Directory Exists | Path: """ + _SoulstormInstallationPath + """")
             '// ...\Dawn of War - Soulstorm\Unlocker
             CreateDirectory(_SoulstormInstallationPath + "\Unlocker")
             '// ...\Dawn of War - Soulstorm\Unlocker\Classic and Winter Assault
@@ -171,7 +171,7 @@ Public Class Cls_RaceUnlocker
             CreateDirectory(_SoulstormInstallationPath + "\" + _SubDirDarkCrusade)
             CreateApplication(_SoulstormInstallationPath + "\" + _SubDirDarkCrusade, _DBDarkCrusade)
         Else
-            Log_Msg(PRÄFIX.EXCEPTION, "Unlock - DirectoryCheck - Not Found | Directory: """ + _SoulstormInstallationPath + """")
+            Log_Msg(PREFIX.EXCEPTION, "Unlock - DirectoryCheck - Not Found | Directory: """ + _SoulstormInstallationPath + """")
             _ExeUnlockStatus = "The path to your Dawn of War Soulstorm directory does not exist."
         End If
     End Sub
@@ -183,13 +183,13 @@ Public Class Cls_RaceUnlocker
         Catch ex As Exception
             If IsNothing(_Path) Then _Path = "NOTHING"
 
-            Log_Msg(PRÄFIX.EXCEPTION, "Unlock - CreateDirectory - Exeption | Path: """ + _Path + """")
-            Log_Msg(PRÄFIX.EXCEPTION, "Unlock - CreateDirectory - Exeption | Message: """ + ex.ToString + """")
+            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateDirectory - Exeption | Path: """ + _Path + """")
+            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateDirectory - Exeption | Message: """ + ex.ToString + """")
             _ExeUnlockStatus = "A error occured while creating a new directory in your Dawn of War directory." + vbCrLf + vbCrLf + _
                                "Check the logfile for more informations."
             Return False
         End Try
-        Log_Msg(PRÄFIX.INFO, "Unlock - CreateDirectory - Successful | Path: """ + _Path + """")
+        Log_Msg(PREFIX.INFO, "Unlock - CreateDirectory - Successful | Path: """ + _Path + """")
         Return True
     End Function
 
@@ -201,13 +201,13 @@ Public Class Cls_RaceUnlocker
             If IsNothing(_Path) Then _Path = "NOTHING"
             If IsNothing(_Game) Then _Game = New GameData With {.ExeName = "NOTHING", .ID = GAME_ID.NOT_SET}
 
-            Log_Msg(PRÄFIX.EXCEPTION, "Unlock - CreateApplication - Exception | Path/Game: """ + _Path + """\""" + _Game.ExeName + """")
-            Log_Msg(PRÄFIX.EXCEPTION, "Unlock - CreateApplication - Exception | Message: """ + ex.ToString + """")
+            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateApplication - Exception | Path/Game: """ + _Path + """\""" + _Game.ExeName + """")
+            Log_Msg(PREFIX.EXCEPTION, "Unlock - CreateApplication - Exception | Message: """ + ex.ToString + """")
             _ExeUnlockStatus = "A error occured while copying the fake exe files in your Dawn of War Soulstorm directory." + vbCrLf + vbCrLf + _
                                "Check the logfile for more informations."
             Return False
         End Try
-        Log_Msg(PRÄFIX.INFO, "Unlock - CreateApplication - Successful | Path: """ + _Path + """\""" + _Game.ExeName + """")
+        Log_Msg(PREFIX.INFO, "Unlock - CreateApplication - Successful | Path: """ + _Path + """\""" + _Game.ExeName + """")
         Return True
     End Function
 #End Region

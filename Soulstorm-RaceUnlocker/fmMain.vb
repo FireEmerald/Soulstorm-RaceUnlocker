@@ -1,5 +1,5 @@
 ﻿
-'* Copyright (C) 2013-2014 FireEmerald <https://github.com/FireEmerald>
+'* Copyright (C) 2013-2015 FireEmerald <https://github.com/FireEmerald>
 '* Copyright (C) 2008-2009 n0|Belial2003 <http://dow.4players.de/forum/index.php?page=User&userID=10286&s=4d85aca336eaa03924c488f8e7e6ed7cd7389caa>
 '*
 '* Project: Soulstorm - Race Unlocker
@@ -24,16 +24,6 @@ Option Strict On
 
 Imports System.IO
 Imports System.Text.RegularExpressions
-
-Public Enum OS
-    NOT_SUPPORTED = 0
-    WINDOWS_2000 = 1
-    WINDOWS_XP = 2
-    WINDOWS_2003 = 3
-    WINDOWS_VISTA = 4
-    WINDOWS_7 = 5
-    WINDOWS_8 = 6
-End Enum
 
 Public Enum GAME_ID
     NOT_SET = 0
@@ -60,35 +50,35 @@ Public Class fmMain
     Private Sub fmMain_Load_Handler(sender As Object, e As EventArgs) Handles Me.Load
         '// Add a new line at the end of a existing logfile.
         Initialize_Log()
-        Log_Msg(PRÄFIX.INFO, "Application Startup - Initialized Logsystem")
+        Log_Msg(PREFIX.INFO, "Application Startup - Initialized Logsystem")
 
-        Log_Msg(PRÄFIX.INFO, "Application Startup - RaceUnlocker - Version: """ + My.Application.Info.Version.ToString + """")
+        Log_Msg(PREFIX.INFO, "Application Startup - RaceUnlocker - Version: '{0}'", New Object() {My.Application.Info.Version.ToString})
 
-        Log_Msg(PRÄFIX.INFO, "Application Startup - System informations - Windows: """ + [Enum].GetName(GetType(OS), GetOperatingSystem) + """")
-        Log_Msg(PRÄFIX.INFO, "Application Startup - System informations - 64 Bit: """ + GetOS_ArchitectureAsString() + """")
+        Log_Msg(PREFIX.INFO, "Application Startup - System informations - Windows: '{0}'", New Object() {Environment.OSVersion.VersionString})
+        Log_Msg(PREFIX.INFO, "Application Startup - System informations - 64 Bit: '{0}'", New Object() {GetOS_ArchitectureAsString()})
 
-        Log_Msg(PRÄFIX.INFO, "Application Startup - System informations - All 32bit Registrykeys are redirected to 'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node'")
-        Log_Msg(PRÄFIX.INFO, "Application Startup - System informations - All 64bit Registrykeys stored in 'HKEY_LOCAL_MACHINE\SOFTWARE'")
-        Log_Msg(PRÄFIX.INFO, "Application Startup - System informations - All Dawn of War (Soulstorm or older) Applications are 32bit, so they are always at the 32bit directory.")
+        Log_Msg(PREFIX.INFO, "Application Startup - System informations - All 32bit Registrykeys are redirected to 'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node'")
+        Log_Msg(PREFIX.INFO, "Application Startup - System informations - All 64bit Registrykeys stored in 'HKEY_LOCAL_MACHINE\SOFTWARE'")
+        Log_Msg(PREFIX.INFO, "Application Startup - System informations - All Dawn of War (Soulstorm or older) Applications are 32bit, so they are always at the 32bit directory.")
 
-        Log_Msg(PRÄFIX.INFO, "Application Startup - Loading Backgroundcolors")
+        Log_Msg(PREFIX.INFO, "Application Startup - Loading Backgroundcolors")
         '// Transparent for each Status Icon's Background (Images are PNG)
         pbClassicStatus.BackColor = Color.Transparent
         pbWinterAssaultStatus.BackColor = Color.Transparent
         pbDarkCrusadeStatus.BackColor = Color.Transparent
         pbSoulstormStatus.BackColor = Color.Transparent
 
-        Log_Msg(PRÄFIX.INFO, "Application Startup - Loading Soulstorm Installation Path")
+        Log_Msg(PREFIX.INFO, "Application Startup - Loading Soulstorm Installation Path")
         '// Load the existing data from the registry
         Dim _RegSoulstormFolderPath As String = GetRegInstallDirectory(_DBSoulstorm)
         tbSoulstormInstallationDirectory.Text = PathShorten(_RegSoulstormFolderPath, 340, tbSoulstormInstallationDirectory.Font)
         '// Overrides the path set before by TextChanged event.
         _SoulstormFolderPath = _RegSoulstormFolderPath
 
-        Log_Msg(PRÄFIX.INFO, "Application Startup - Soulstorm Installation Path - RegPath: """ + _SoulstormFolderPath + """ | RegPathResized: """ + tbSoulstormInstallationDirectory.Text + """")
+        Log_Msg(PREFIX.INFO, "Application Startup - Soulstorm Installation Path - RegPath: """ + _SoulstormFolderPath + """ | RegPathResized: """ + tbSoulstormInstallationDirectory.Text + """")
 
         If Regex.IsMatch(GetRegGameKey(_DBClassic), _GameKeyPattern_4) Then
-            Log_Msg(PRÄFIX.INFO, "Application Startup - Regex Game Key - Is Match | Affected Game: Classic")
+            Log_Msg(PREFIX.INFO, "Application Startup - Regex Game Key - Is Match | Affected Game: Classic")
             '// Classic
             Dim _ClassicGameKeyParts As List(Of String) = GetGameKeyParts(GetRegGameKey(_DBClassic))
             tbClassicKey_1.Text = _ClassicGameKeyParts.Item(0)
@@ -97,7 +87,7 @@ Public Class fmMain
             tbClassicKey_4.Text = _ClassicGameKeyParts.Item(3)
         End If
         If Regex.IsMatch(GetRegGameKey(_DBWinterAssault), _GameKeyPattern_5) Then
-            Log_Msg(PRÄFIX.INFO, "Application Startup - Regex Game Key - Is Match | Affected Game: Winter Assault")
+            Log_Msg(PREFIX.INFO, "Application Startup - Regex Game Key - Is Match | Affected Game: Winter Assault")
             '// Winter Assault
             Dim _WinterAssaultGameKeyParts As List(Of String) = GetGameKeyParts(GetRegGameKey(_DBWinterAssault))
             tbWinterAssaultKey_1.Text = _WinterAssaultGameKeyParts.Item(0)
@@ -107,7 +97,7 @@ Public Class fmMain
             tbWinterAssaultKey_5.Text = _WinterAssaultGameKeyParts.Item(4)
         End If
         If Regex.IsMatch(GetRegGameKey(_DBDarkCrusade), _GameKeyPattern_5) Then
-            Log_Msg(PRÄFIX.INFO, "Application Startup - Regex Game Key - Is Match | Affected Game: Dark Crusade")
+            Log_Msg(PREFIX.INFO, "Application Startup - Regex Game Key - Is Match | Affected Game: Dark Crusade")
             '// Dark Crusade
             Dim _DarkCrusadeGameKeyParts As List(Of String) = GetGameKeyParts(GetRegGameKey(_DBDarkCrusade))
             tbDarkCrusadeKey_1.Text = _DarkCrusadeGameKeyParts.Item(0)
@@ -117,7 +107,7 @@ Public Class fmMain
             tbDarkCrusadeKey_5.Text = _DarkCrusadeGameKeyParts.Item(4)
         End If
         If Regex.IsMatch(GetRegGameKey(_DBSoulstorm), _GameKeyPattern_5) Then
-            Log_Msg(PRÄFIX.INFO, "Application Startup - Regex Game Key - Is Match | Affected Game: Soulstorm")
+            Log_Msg(PREFIX.INFO, "Application Startup - Regex Game Key - Is Match | Affected Game: Soulstorm")
             '// Soulstorm
             Dim _SoulstormGameKeyParts As List(Of String) = GetGameKeyParts(GetRegGameKey(_DBSoulstorm))
             tbSoulstormKey_1.Text = _SoulstormGameKeyParts.Item(0)
@@ -130,13 +120,13 @@ Public Class fmMain
 
     ''' <summary>Split a String on each '-' to get all single parts of a whole game key.</summary>
     Private Function GetGameKeyParts(_FullGameKey As String) As List(Of String)
-        Log_Msg(PRÄFIX.INFO, "Functions - GetGameKeyParts - Split Key | Key: """ + _FullGameKey.Substring(0, _FullGameKey.LastIndexOf("-")) + "-XXXX""")
+        Log_Msg(PREFIX.INFO, "Functions - GetGameKeyParts - Split Key | Key: """ + _FullGameKey.Substring(0, _FullGameKey.LastIndexOf("-")) + "-XXXX""")
         Dim _GameKeyParts As New List(Of String)
         _GameKeyParts.AddRange(Regex.Split(_FullGameKey.ToUpper, "-"))
         Return _GameKeyParts
     End Function
 #End Region
-    
+
     Private Sub Unlock()
         '// Check if entered game keys are valid and operation system is supported / Soulstorm.exe path is correct.
         If Regex.IsMatch(GetCompleteGameKey(GAME_ID.CLASSIC), _GameKeyPattern_4) AndAlso _
@@ -144,59 +134,55 @@ Public Class fmMain
            Regex.IsMatch(GetCompleteGameKey(GAME_ID.DARK_CRUSADE), _GameKeyPattern_5) AndAlso _
            Regex.IsMatch(GetCompleteGameKey(GAME_ID.SOULSTORM), _GameKeyPattern_5) Then
 
-            If Not GetOperatingSystem() = OS.NOT_SUPPORTED Then
-                If IsMatchSoulstormEXE(_SoulstormFolderPath) Then '// Set a NOT for testing here.
-                    '// Start Unlock Process. First the registry unlock, then the *.exe unlock.
-                    Dim _Unlocker As New Cls_RaceUnlocker(GetCompleteGameKey(GAME_ID.CLASSIC), _
-                                                          GetCompleteGameKey(GAME_ID.WINTER_ASSAULT), _
-                                                          GetCompleteGameKey(GAME_ID.DARK_CRUSADE), _
-                                                          GetCompleteGameKey(GAME_ID.SOULSTORM), _
-                                                          _SoulstormFolderPath)
-                    _Unlocker.Unlock_Registry()
+            If IsMatchSoulstormEXE(_SoulstormFolderPath) Then '// Set a NOT for testing here.
+                '// Start Unlock Process. First the registry unlock, then the *.exe unlock.
+                Dim _Unlocker As New Cls_RaceUnlocker(GetCompleteGameKey(GAME_ID.CLASSIC), _
+                                                      GetCompleteGameKey(GAME_ID.WINTER_ASSAULT), _
+                                                      GetCompleteGameKey(GAME_ID.DARK_CRUSADE), _
+                                                      GetCompleteGameKey(GAME_ID.SOULSTORM), _
+                                                      _SoulstormFolderPath)
+                _Unlocker.Unlock_Registry()
 
-                    If _Unlocker.GetRegistryUnlockStatus = "done" Then
-                        _Unlocker.Unlock_Exe()
+                If _Unlocker.GetRegistryUnlockStatus = "done" Then
+                    _Unlocker.Unlock_Exe()
 
-                        If _Unlocker.GetExeUnlockStatus = "no_error" Then
-                            MessageBox.Show("Process successfully completed.", "Soulstorm unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                        Else
-                            MessageBox.Show(_Unlocker.GetExeUnlockStatus, "Soulstorm NOT unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                        End If
+                    If _Unlocker.GetExeUnlockStatus = "no_error" Then
+                        MessageBox.Show("Process successfully completed.", "Soulstorm unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     Else
-                        '// Error while unlocking the registry
-                        Select Case MessageBox.Show(_Unlocker.GetRegistryUnlockStatus + vbCrLf + vbCrLf + _
-                                                    "Anyway, would you like to unlock the *.exe files?" + vbCrLf + _
-                                                    "(It's NOT recommended. The Unlock will NOT work!)" + vbCrLf + vbCrLf + _
-                                                    "Check the ""Race Unlocker Log.log"" on your Desktop for" + vbCrLf + _
-                                                    "more informations.", "Registry unlock error occured", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                            Case DialogResult.Yes
-                                _Unlocker.Unlock_Exe()
-
-                                If _Unlocker.GetExeUnlockStatus = "no_error" Then
-                                    MessageBox.Show("Process completed. (NOT WORKING !)", "Soulstorm NOT unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                                Else
-                                    MessageBox.Show(_Unlocker.GetExeUnlockStatus, "Soulstorm NOT unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                                End If
-                        End Select
+                        MessageBox.Show(_Unlocker.GetExeUnlockStatus, "Soulstorm NOT unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     End If
+                Else
+                    '// Error while unlocking the registry
+                    Select Case MessageBox.Show(_Unlocker.GetRegistryUnlockStatus + vbCrLf + vbCrLf + _
+                                                "Anyway, would you like to unlock the *.exe files?" + vbCrLf + _
+                                                "(It's NOT recommended. The Unlock will NOT work!)" + vbCrLf + vbCrLf + _
+                                                "Check the ""Race Unlocker Log.log"" on your Desktop for" + vbCrLf + _
+                                                "more informations.", "Registry unlock error occured", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+                        Case DialogResult.Yes
+                            _Unlocker.Unlock_Exe()
 
-                    '// Show the logfile if user want to see it.
-                    Select Case MessageBox.Show("Would you like to see the logfile?", "Process informations", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                        Case Windows.Forms.DialogResult.Yes
-                            Try
-                                Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\" + GetLogfileName)
-                            Catch ex As Exception
-                                MessageBox.Show("The logfile couldn't be found!" + vbCrLf + vbCrLf + ex.Message, "Logfile not found", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                            End Try
+                            If _Unlocker.GetExeUnlockStatus = "no_error" Then
+                                MessageBox.Show("Process completed. (NOT WORKING !)", "Soulstorm NOT unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                            Else
+                                MessageBox.Show(_Unlocker.GetExeUnlockStatus, "Soulstorm NOT unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                            End If
                     End Select
-                    '// Unlock process END
                 End If
-            Else
-                Log_Msg(PRÄFIX.EXCEPTION, "PreUnlock Process - Status - Operation system not supported")
-                MessageBox.Show("Your operation system is not supported yet!", "Wrong operation system", MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+                '// Show the logfile if user want to see it.
+                Select Case MessageBox.Show("Would you like to see the logfile?", "Process informations", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                    Case Windows.Forms.DialogResult.Yes
+                        Try
+                            Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\" + GetLogfileName)
+                        Catch ex As Exception
+                            MessageBox.Show("The logfile couldn't be found!" + vbCrLf + vbCrLf + ex.Message, "Logfile not found", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        End Try
+                End Select
+                '// Unlock process END
             End If
+
         Else
-            Log_Msg(PRÄFIX.WARNING, "PreUnlock Process - Status - Wrong CD-Keys found")
+            Log_Msg(PREFIX.WARNING, "PreUnlock Process - Status - Wrong CD-Keys found")
             MessageBox.Show("Please enter a only valid CD-Keys!", "Serial Number syntax", MessageBoxButtons.OK, MessageBoxIcon.Hand)
         End If
 
@@ -216,12 +202,12 @@ Public Class fmMain
     Private Function IsMatchSoulstormEXE(_TempSoulstormFolderPath As String) As Boolean
         If File.Exists(_TempSoulstormFolderPath + "\Soulstorm.exe") Then
             If FileVersionInfo.GetVersionInfo(_TempSoulstormFolderPath + "\Soulstorm.exe").FileVersion = "1, 4, 0, 0" Then
-                Log_Msg(PRÄFIX.INFO, "Functions - IsMatchSoulstormEXE - Soulstorm is UpToDate")
+                Log_Msg(PREFIX.INFO, "Functions - IsMatchSoulstormEXE - Soulstorm is UpToDate")
                 tbSoulstormInstallationDirectory.Text = PathShorten(_TempSoulstormFolderPath, 340, tbSoulstormInstallationDirectory.Font)
                 '// Save the complete path. Overrides the path set before by TextChanged event.
                 _SoulstormFolderPath = _TempSoulstormFolderPath
             Else
-                Log_Msg(PRÄFIX.INFO, "Functions - IsMatchSoulstormEXE - Soulstorm Update available")
+                Log_Msg(PREFIX.INFO, "Functions - IsMatchSoulstormEXE - Soulstorm Update available")
                 Select Case MessageBox.Show("You should update your Soulstorm installation. Download now?" + vbCrLf + vbCrLf + _
                                             "Patch: SS_DE_1.20_Patch.zip | 111 MiB" + vbCrLf + _
                                             "SHA1: fb26609a168b489d3fcd5aba6581b2154d9872de" + vbCrLf + vbCrLf + _
@@ -238,7 +224,7 @@ Public Class fmMain
             End If
             Return True
         End If
-        Log_Msg(PRÄFIX.WARNING, "Functions - IsMatchSoulstormEXE - No Soulstorm.exe found. | Directory: """ + _TempSoulstormFolderPath + "\Soulstorm.exe""")
+        Log_Msg(PREFIX.WARNING, "Functions - IsMatchSoulstormEXE - No Soulstorm.exe found. | Directory: """ + _TempSoulstormFolderPath + "\Soulstorm.exe""")
         Select Case MessageBox.Show("Please check the installation path. The 'Soulstorm.exe' couldn't found!" + vbCrLf + _
                                     "Selected: """ + _TempSoulstormFolderPath + "\Soulstorm.exe""", "Soulstorm.exe not found", MessageBoxButtons.OKCancel, MessageBoxIcon.Hand)
             Case Windows.Forms.DialogResult.OK
@@ -254,7 +240,7 @@ Public Class fmMain
     ''' <param name="_Length">The Length in pixel which shouldn't be exceeded. </param>
     ''' <param name="_TextFont">Used font.</param>
     Private Function PathShorten(_Path As String, _Length As Integer, _TextFont As Font) As String
-        Log_Msg(PRÄFIX.INFO, "Functions - PathShorten - Cut | Path: """ + _Path + """ | Length: """ + _Length.ToString + """ | Font: """ + _TextFont.ToString + """")
+        Log_Msg(PREFIX.INFO, "Functions - PathShorten - Cut | Path: """ + _Path + """ | Length: """ + _Length.ToString + """ | Font: """ + _TextFont.ToString + """")
         Dim PathParts() As String = Split(_Path, "\")
         Dim PathBuild As New System.Text.StringBuilder(_Path.Length)
         Dim LastPart As String = PathParts(PathParts.Length - 1)
@@ -278,7 +264,7 @@ Public Class fmMain
 
     ''' <summary>Merges all 4/5 TextBoxes of a Game Key together and add '-' between them.</summary>
     Private Function GetCompleteGameKey(_GameId As GAME_ID) As String
-        Log_Msg(PRÄFIX.INFO, "Functions - GetCompleteGameKey - Merge | GameID: """ + [Enum].GetName(GetType(GAME_ID), _GameId) + """")
+        Log_Msg(PREFIX.INFO, "Functions - GetCompleteGameKey - Merge | GameID: """ + [Enum].GetName(GetType(GAME_ID), _GameId) + """")
         Select Case _GameId
             Case GAME_ID.CLASSIC : Return tbClassicKey_1.Text + "-" + tbClassicKey_2.Text + "-" + tbClassicKey_3.Text + "-" + tbClassicKey_4.Text
             Case GAME_ID.WINTER_ASSAULT : Return tbWinterAssaultKey_1.Text + "-" + tbWinterAssaultKey_2.Text + "-" + tbWinterAssaultKey_3.Text + "-" + tbWinterAssaultKey_4.Text + "-" + tbWinterAssaultKey_5.Text
@@ -293,29 +279,6 @@ Public Class fmMain
     ''' <summary>Check if System is 64 bit YES/NO.</summary>
     Private Function GetOS_ArchitectureAsString() As String
         Return Environment.Is64BitOperatingSystem.ToString.ToUpper.Replace("TRUE", "YES").Replace("FALSE", "NO")
-    End Function
-
-    ''' <summary>Get the current operation system.</summary>
-    Private Function GetOperatingSystem() As OS
-        Log_Msg(PRÄFIX.INFO, "Functions - GetOperationSystem")
-        Select Case Environment.OSVersion.Platform
-            Case PlatformID.Win32NT
-                Select Case Environment.OSVersion.Version.Major
-                    Case 5
-                        Select Case Environment.OSVersion.Version.Minor
-                            Case 0 : Return OS.WINDOWS_2000  '// Windows 2000
-                            Case 1 : Return OS.WINDOWS_XP    '// Windows XP
-                            Case 2 : Return OS.WINDOWS_2003  '// Windows 2003
-                        End Select
-                    Case 6
-                        Select Case Environment.OSVersion.Version.Minor
-                            Case 0 : Return OS.WINDOWS_VISTA '// Windows Vista/Windows 2008 Server
-                            Case 1 : Return OS.WINDOWS_7     '// Windows 7
-                            Case 2 : Return OS.WINDOWS_8     '// Windows 8
-                        End Select
-                End Select
-        End Select
-        Return OS.NOT_SUPPORTED '// Nicht unterstützt.
     End Function
 #End Region
 
@@ -344,7 +307,7 @@ Public Class fmMain
     Private Sub Me_MouseUp(ByVal sender As Object, ByVal e As MouseEventArgs) Handles Me.MouseUp
         If Not _MovedWhileDown Then
             '// Short click (without moving the mouse) will close the form.
-            'Log_Msg(PRÄFIX.INFO, "Window Movement - Form MouseUp - Application Exit")
+            'Log_Msg(PREFIX.INFO, "Window Movement - Form MouseUp - Application Exit")
             'Application.Exit()
         Else
             _MouseDown = False
@@ -369,7 +332,7 @@ Public Class fmMain
 
     Private Sub pbClose_MouseUp(sender As Object, e As MouseEventArgs) Handles pbClose.MouseUp
         pbClose.Image = My.Resources.close
-        Log_Msg(PRÄFIX.INFO, "Button Management - Close MouseUp - Application Exit")
+        Log_Msg(PREFIX.INFO, "Button Management - Close MouseUp - Application Exit")
         Application.Exit()
     End Sub
 #End Region
@@ -385,7 +348,7 @@ Public Class fmMain
     End Sub
     Private Sub pbMinimize_MouseUp(sender As Object, e As MouseEventArgs) Handles pbMinimize.MouseUp
         pbMinimize.Image = My.Resources.close
-        Log_Msg(PRÄFIX.INFO, "Button Management - Minimize MouseUp - Minimize")
+        Log_Msg(PREFIX.INFO, "Button Management - Minimize MouseUp - Minimize")
         Me.WindowState = FormWindowState.Minimized
     End Sub
 #End Region
@@ -401,7 +364,7 @@ Public Class fmMain
     End Sub
     Private Sub pbUnlock_MouseUp(sender As Object, e As MouseEventArgs) Handles pbUnlock.MouseUp
         pbUnlock.Image = My.Resources.unlock
-        Log_Msg(PRÄFIX.INFO, "Button Management - Unlock MouseUp - Start unlock process")
+        Log_Msg(PREFIX.INFO, "Button Management - Unlock MouseUp - Start unlock process")
         Unlock()
     End Sub
 #End Region
@@ -417,7 +380,7 @@ Public Class fmMain
     End Sub
     Private Sub pbChoose_MouseUp(sender As Object, e As MouseEventArgs) Handles pbChoose.MouseUp
         pbChoose.Image = My.Resources.choose
-        Log_Msg(PRÄFIX.INFO, "Button Management - Choose MouseUp - Start select soulstorm path")
+        Log_Msg(PREFIX.INFO, "Button Management - Choose MouseUp - Start select soulstorm path")
         ChooseSoulstormPath()
     End Sub
 #End Region
