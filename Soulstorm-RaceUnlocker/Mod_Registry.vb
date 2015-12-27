@@ -19,9 +19,6 @@
 '* You should have received a copy of the GNU General Public License along
 '* with this program. If not, see <http://www.gnu.org/licenses/>.
 
-Option Explicit On
-Option Strict On
-
 Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
 
@@ -254,7 +251,7 @@ Module Mod_Registry
 
     Private Function GetException(ex As Exception) As String
         Return vbCrLf & vbCrLf & "Please login as administrator and start the application with:" & vbCrLf & _
-                                 "'Right click' -> 'Start as administrator' !" & _
+                                 "'Right click' -> 'Start as administrator'" & _
                                  "%ex%" & ex.ToString
     End Function
 #End Region

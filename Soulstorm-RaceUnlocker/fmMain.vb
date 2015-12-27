@@ -19,10 +19,8 @@
 '* You should have received a copy of the GNU General Public License along
 '* with this program. If not, see <http://www.gnu.org/licenses/>.
 
-Option Explicit On
-Option Strict On
-
 Imports System.IO
+Imports System.Management
 Imports System.Text.RegularExpressions
 Imports System.Security.Cryptography
 
@@ -65,7 +63,7 @@ Public Class fmMain
 
         Log_Msg(PREFIX.INFO, "Application Startup - RaceUnlocker - Version: '{0}'", New Object() {My.Application.Info.Version.ToString})
 
-        Log_Msg(PREFIX.INFO, "Application Startup - System informations - Windows: '{0}'", New Object() {Environment.OSVersion.VersionString})
+        Log_Msg(PREFIX.INFO, "Application Startup - System informations - Windows | Version: '{0}' | FriendlyName: '{1}'", New Object() {Environment.OSVersion.VersionString, GetOS_FriendlyName()})
         Log_Msg(PREFIX.INFO, "Application Startup - System informations - 64 Bit: '{0}'", New Object() {GetOS_ArchitectureAsString()})
 
         Log_Msg(PREFIX.INFO, "Application Startup - System informations - All 32bit Registry keys are redirected to 'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node'")
@@ -129,7 +127,7 @@ Public Class fmMain
         End If
     End Sub
 
-    ''' <summary>Split a String on each '-' to get all single parts of a whole game key.</summary>
+    ''' <summary>Splits a String on each '-' to get all single parts of a whole game key.</summary>
     Private Function GetGameKeyParts(_FullGameKey As String) As List(Of String)
         Log_Msg(PREFIX.INFO, "Functions - GetGameKeyParts - Split Key | Key: '" & _FullGameKey.Substring(0, _FullGameKey.LastIndexOf("-")) & "-XXXX'")
         Dim _GameKeyParts As New List(Of String)
@@ -139,14 +137,14 @@ Public Class fmMain
 #End Region
 
     Private Sub Unlock()
-        '// Check if entered game keys are valid and operation system is supported / Soulstorm.exe path is correct.
+        '// Check if the entered game keys are valid and the 'Soulstorm.exe' path is correct.
         If Regex.IsMatch(GetCompleteGameKey(GAME_ID.CLASSIC), _GameKeyPattern_4) AndAlso _
            Regex.IsMatch(GetCompleteGameKey(GAME_ID.WINTER_ASSAULT), _GameKeyPattern_5) AndAlso _
            Regex.IsMatch(GetCompleteGameKey(GAME_ID.DARK_CRUSADE), _GameKeyPattern_5) AndAlso _
            Regex.IsMatch(GetCompleteGameKey(GAME_ID.SOULSTORM), _GameKeyPattern_5) Then
 
-            If IsMatchSoulstormEXE(_SoulstormFolderPath) Then '// Set a NOT for testing here.
-                '// Start Unlock Process. First the registry unlock, then the *.exe unlock.
+            If IsMatchSoulstormEXE(_SoulstormFolderPath) Then
+                '// Start Unlock Process. First the registry unlock, then the *.exe part.
                 Dim _Unlocker As New Cls_RaceUnlocker(GetCompleteGameKey(GAME_ID.CLASSIC), _
                                                       GetCompleteGameKey(GAME_ID.WINTER_ASSAULT), _
                                                       GetCompleteGameKey(GAME_ID.DARK_CRUSADE), _
@@ -154,44 +152,33 @@ Public Class fmMain
                                                       _SoulstormFolderPath)
                 _Unlocker.Unlock_Registry()
 
-                If _Unlocker.GetRegistryUnlockStatus = "done" Then
+                If _Unlocker.GetRegistryUnlockStatus = Cls_RaceUnlocker.UNLOCK_REGISTRY_SUCCESSFULLY Then
                     _Unlocker.Unlock_Exe()
 
-                    If _Unlocker.GetExeUnlockStatus = "no_error" Then
-                        MessageBox.Show("Process successfully completed.", "Soulstorm unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    If _Unlocker.GetExeUnlockStatus = Cls_RaceUnlocker.UNLOCK_EXE_SUCCESSFULLY Then
+                        MessageBox.Show("Unlock process successfully completed.", "All Races unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     Else
-                        MessageBox.Show(_Unlocker.GetExeUnlockStatus, "Soulstorm NOT unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        '// Error while unlocking the executable.
+                        MessageBox.Show(_Unlocker.GetExeUnlockStatus, "Unlock process failed (Executable)", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     End If
                 Else
-                    '// Error while unlocking the registry
-                    Select Case MessageBox.Show(_Unlocker.GetRegistryUnlockStatus & vbCrLf & vbCrLf & _
-                                                "Anyway, would you like to unlock the *.exe files?" & vbCrLf & _
-                                                "(It's NOT recommended. The Unlock will NOT work!)" & vbCrLf & vbCrLf & _
-                                                "Check the 'Race Unlocker Log.log' on your Desktop for" & vbCrLf & _
-                                                "more informations.", "Registry unlock error occurred", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                        Case DialogResult.Yes
-                            _Unlocker.Unlock_Exe()
-
-                            If _Unlocker.GetExeUnlockStatus = "no_error" Then
-                                MessageBox.Show("Process completed. (NOT WORKING !)", "Soulstorm NOT unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                            Else
-                                MessageBox.Show(_Unlocker.GetExeUnlockStatus, "Soulstorm NOT unlocked!", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                            End If
-                    End Select
+                    '// Error while unlocking the registry.
+                    MessageBox.Show(_Unlocker.GetRegistryUnlockStatus, "Unlock process failed (Registry)", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 End If
 
-                '// Show the log file if user want to see it.
+                '// Show the log file if the user wants to see it.
                 Select Case MessageBox.Show("Would you like to see the log file?", "Process informations", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                     Case Windows.Forms.DialogResult.Yes
                         Try
                             Process.Start(GetFullLogfilePath)
                         Catch ex As Exception
-                            MessageBox.Show("The log file couldn't be found!" & vbCrLf & vbCrLf & ex.Message, "Log file not found", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            MessageBox.Show("The log file couldn't be found!" & vbCrLf & _
+                                            vbCrLf & _
+                                            ex.Message, "Log file not found", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         End Try
                 End Select
                 '// Unlock process END
             End If
-
         Else
             Log_Msg(PREFIX.WARNING, "PreUnlock Process - Status - Wrong CD-Keys found")
             MessageBox.Show("Please enter a only valid CD-Keys!", "Serial Number syntax", MessageBoxButtons.OK, MessageBoxIcon.Hand)
@@ -228,6 +215,7 @@ Public Class fmMain
                             MessageBox.Show("A error occurred, while accessing the website." & vbCrLf & _
                                             "Visit the page manually: '" & SOULSTORM_PATCH_LINK & "'", "Connection error.", MessageBoxButtons.OK, MessageBoxIcon.Information)
                         End Try
+                        Return False
                 End Select
             Else
                 Log_Msg(PREFIX.INFO, "Functions - IsMatchSoulstormEXE - Soulstorm is UpToDate")
@@ -345,6 +333,13 @@ Public Class fmMain
     ''' <summary>Check if System is 64 bit YES/NO.</summary>
     Private Function GetOS_ArchitectureAsString() As String
         Return Environment.Is64BitOperatingSystem.ToString.ToUpper.Replace("TRUE", "YES").Replace("FALSE", "NO")
+    End Function
+
+    ''' <summary>Returns the operating system version or the String 'Unknown'.</summary>
+    Private Function GetOS_FriendlyName() As String
+        Dim _name As Object = (From x In New ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem").Get.Cast(Of ManagementObject)() _
+                               Select x.GetPropertyValue("Caption")).FirstOrDefault()
+        Return If(_name IsNot Nothing, _name.ToString(), "Unknown")
     End Function
 #End Region
 
