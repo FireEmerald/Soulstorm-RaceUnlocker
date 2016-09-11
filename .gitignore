@@ -1,4 +1,29 @@
+#Ignore Windows Thumbnails
+Thumbs.db
+
+#Ignore Visual Studio Files
+*.obj
+*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
 *.suo
-Soulstorm-RaceUnlocker/bin/
-Soulstorm-RaceUnlocker/obj/
-Soulstorm-RaceUnlocker/Images/
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+[Bb]in
+[Dd]ebug*/
+*.lib
+*.sbr
+obj/
+[Rr]elease*/
+_ReSharper*/
+
+#Repository specific

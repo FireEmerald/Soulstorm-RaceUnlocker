@@ -1,4 +1,4 @@
-﻿# ![logo](https://github.com/FireEmerald/Soulstorm-RaceUnlocker/raw/master/images/chaos_150.png) Soulstorm - Race Unlocker
+﻿# ![logo](img/chaos.png) Soulstorm - Race Unlocker
 #### Blood for the Blood God !
 
 ## Introduction
@@ -23,12 +23,12 @@ So you just need Soulstorm installed but you need a valid serial number for each
 
 ## Install
 
-Just run the [Soulstorm - Race Unlocker.exe](https://github.com/FireEmerald/Soulstorm-RaceUnlocker/raw/master/release/Soulstorm%20-%20Race%20Unlocker.exe). No installation required.
+Just run the [Soulstorm - Race Unlocker.exe](https://github.com/FireEmerald/Soulstorm-RaceUnlocker/raw/master/pre-compiled/Soulstorm%20-%20Race%20Unlocker.exe). No installation required.
 
 
 ## How to use
 
-- Start the [Soulstorm - Race Unlocker.exe](https://github.com/FireEmerald/Soulstorm-RaceUnlocker/raw/master/release/Soulstorm%20-%20Race%20Unlocker.exe)
+- Start the [Soulstorm - Race Unlocker.exe](https://github.com/FireEmerald/Soulstorm-RaceUnlocker/raw/master/pre-compiled/Soulstorm%20-%20Race%20Unlocker.exe)
 - Insert your serial numbers of each expansion and for Soulstorm
 - Select the installation location of Soulstorm
 - Click *Unlock*, done!
@@ -51,9 +51,8 @@ Fixes are submitted as pull request via Github or as code in a issue.
 
 ## Copyright
 
-Copyright (C) 2013-2015 by [FireEmerald](https://github.com/FireEmerald)
+Copyright (C) 2013-2016 by [FireEmerald](https://github.com/FireEmerald)
 
 Copyright (C) 2008-2009 by [n0|Belial2003](http://dow.4players.de/forum/index.php?page=User&userID=10286&s=4d85aca336eaa03924c488f8e7e6ed7cd7389caa)
 
-
-License: [GPL 3.0](https://github.com/FireEmerald/Soulstorm-RaceUnlocker/blob/master/doc/GPL_3_0.txt)
+License: [GPL 3.0](LICENSE)
