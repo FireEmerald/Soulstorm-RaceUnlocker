@@ -10,7 +10,7 @@ So you just need Soulstorm installed but you need a valid serial number for each
 
 ## Preview image
 
-![preview](http://dow.4players.de/forum/index.php?page=Attachment&attachmentID=32485&h=1d785875c4ac8e2d647de15610aa8aed54232ec2)
+![preview](img/preview.png)
 
 
 ## Requirements
@@ -18,7 +18,7 @@ So you just need Soulstorm installed but you need a valid serial number for each
 + Platform: Windows (32/64bit)
 + Supported: 2000, XP, 2003, Vista, 7, 8 and 10.
 + .NET Framework ≥ 4.0
-+ MS Visual Studio Express ≥ 2012
++ MS Visual Studio Express ≥ 2012 (only for development)
 
 
 ## Install
@@ -51,8 +51,8 @@ Fixes are submitted as pull request via Github or as code in a issue.
 
 ## Copyright
 
-Copyright (C) 2013-2017 by [FireEmerald](https://github.com/FireEmerald)
+Copyright (C) 2013-2018 by [FireEmerald](https://github.com/FireEmerald)
 
-Copyright (C) 2008-2009 by [n0|Belial2003](http://dow.4players.de/forum/index.php?page=User&userID=10286&s=4d85aca336eaa03924c488f8e7e6ed7cd7389caa)
+Copyright (C) 2008-2009 by n0|Belial2003, from dow.4players.de Forum (offline now)
 
 License: [GPL 3.0](LICENSE)
